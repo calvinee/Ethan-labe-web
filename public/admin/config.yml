@@ -9,8 +9,8 @@ backend:
   name: "github"
   repo: "calvinee/Ethan-labe-web"
   branch: "main"
-  base_url: "https://REPLACE_WITH_OAUTH_PROXY"
-  auth_endpoint: "auth"
+  base_url: "https://shi-fpga-lab-cms-auth.shi-fpga-lab.workers.dev"
+  auth_endpoint: "/auth"
   squash_merges: true
   commit_messages:
     create: "content: 新建 {{collection}}「{{slug}}」"

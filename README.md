@@ -8,24 +8,25 @@
 
 ## 本地开发
 
-```bash
+```powershell
 pnpm install --frozen-lockfile
 pnpm dev
 ```
 
 启动可视化内容后台：
 
-```bash
+```powershell
 pnpm content:studio
 ```
 
 然后访问 `http://localhost:3000/admin/`。
 
-## 内容结构
+## 内容与发布结构
 
 - `content/blog/*.mdx`：工程文章
 - `content/notes/*.mdx`：工程速记
-- `public/admin/config.yml`：可视化后台字段
-- `.github/workflows/deploy.yml`：Cloudflare 自动发布
+- `public/admin/config.yml`：可视化后台字段与 GitHub 内容库连接
+- `oauth-proxy/`：内容后台的 GitHub OAuth Cloudflare Worker
+- `.github/workflows/deploy.yml`：网站与 OAuth 代理的 Cloudflare 自动发布
 
 关闭 MDX frontmatter 中的 `draft` 后，内容会自动进入首页、博客列表、站内搜索与 sitemap。
