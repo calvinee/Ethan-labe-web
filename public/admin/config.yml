@@ -1,0 +1,91 @@
+locale: "zh_Hans"
+site_url: "https://shi-fpga-lab.shi-fpga-lab.workers.dev"
+display_url: "https://shi-fpga-lab.shi-fpga-lab.workers.dev"
+
+# 本地模式会由 decap-server 接管；远程模式还需配置 GitHub OAuth 代理。
+local_backend: true
+publish_mode: "simple"
+backend:
+  name: "github"
+  repo: "calvinee/Ethan-labe-web"
+  branch: "main"
+  base_url: "https://REPLACE_WITH_OAUTH_PROXY"
+  auth_endpoint: "auth"
+  squash_merges: true
+  commit_messages:
+    create: "content: 新建 {{collection}}「{{slug}}」"
+    update: "content: 更新 {{collection}}「{{slug}}」"
+    delete: "content: 删除 {{collection}}「{{slug}}」"
+    uploadMedia: "content: 上传媒体「{{path}}」"
+    deleteMedia: "content: 删除媒体「{{path}}」"
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "blog"
+    label: "工程文章"
+    label_singular: "文章"
+    folder: "content/blog"
+    extension: "mdx"
+    format: "frontmatter"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{date}} · {{category}} · {{title}}"
+    sortable_fields: ["date", "title", "category", "featured", "draft"]
+    view_filters:
+      - label: "首页主推"
+        field: "featured"
+        pattern: true
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "摘要", name: "description", widget: "text", hint: "用于首页卡片、搜索结果和 SEO。" }
+      - { label: "发布日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "作者", name: "author", widget: "string", default: "时工" }
+      - { label: "栏目", name: "category", widget: "string", default: "FPGA 实战" }
+      - { label: "标签", name: "tags", widget: "list", default: ["FPGA"] }
+      - { label: "阅读时长", name: "reading", widget: "string", default: "10 分钟阅读" }
+      - label: "封面视觉"
+        name: "visual"
+        widget: "select"
+        default: "fpga"
+        options:
+          - { label: "FPGA / 蓝", value: "fpga" }
+          - { label: "AI 硬件 / 蓝", value: "ai" }
+          - { label: "时序 / 青", value: "timing" }
+          - { label: "市场 / 紫", value: "market" }
+          - { label: "板卡 / 绿", value: "board" }
+          - { label: "交付 / 橙", value: "delivery" }
+      - { label: "首页主推", name: "featured", widget: "boolean", default: false, hint: "建议始终只保留一篇主推文章。" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: true, hint: "关闭后才会进入网站、搜索与 sitemap。" }
+      - { label: "喜欢数", name: "likes", widget: "number", value_type: "int", min: 0, default: 0 }
+      - { label: "评论数", name: "comments", widget: "number", value_type: "int", min: 0, default: 0 }
+      - { label: "收藏数", name: "saves", widget: "number", value_type: "int", min: 0, default: 0 }
+      - { label: "正文", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
+
+  - name: "notes"
+    label: "工程速记"
+    label_singular: "速记"
+    folder: "content/notes"
+    extension: "mdx"
+    format: "frontmatter"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{date}} · {{tag}} · {{title}}"
+    sortable_fields: ["date", "title", "tag", "draft"]
+    view_filters:
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "一句话摘要", name: "description", widget: "text" }
+      - { label: "发布日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "标签", name: "tag", widget: "string", default: "BUILD LOG" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: true }
+      - { label: "正文", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }

@@ -1,0 +1,35 @@
+{
+  "name": "shi-lab",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "serve out",
+    "types:check": "next typegen && tsc --noEmit",
+    "content:proxy": "decap-server",
+    "content:studio": "concurrently -k -n WEB,CMS -c cyan,magenta \"next dev --webpack\" \"decap-server\"",
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "fumadocs-core": "16.13.0",
+    "fumadocs-mdx": "15.2.0",
+    "lucide-react": "^1.25.0",
+    "next": "16.2.11",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "concurrently": "10.0.4",
+    "decap-server": "3.10.0",
+    "serve": "^14.2.6",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.50.0"
+  }
+}

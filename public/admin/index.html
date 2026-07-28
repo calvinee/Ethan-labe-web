@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>内容工作台｜时工的半导体实验室</title>
+    <style>
+      body { margin: 0; background: #f7f8fa; color: #111827; }
+      #remote-setup {
+        width: min(680px, calc(100% - 40px));
+        margin: 12vh auto;
+        padding: 42px;
+        box-sizing: border-box;
+        border: 1px solid #d9dee7;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 30px 90px rgba(15, 23, 42, .1);
+        font: 15px/1.75 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      #remote-setup[hidden] { display: none; }
+      #remote-setup small { color: #2563eb; font-weight: 750; letter-spacing: .12em; }
+      #remote-setup h1 { margin: 12px 0 8px; font-size: 30px; letter-spacing: -.04em; }
+      #remote-setup p { margin: 0; color: #64748b; }
+      #remote-setup code { padding: 2px 6px; border-radius: 4px; background: #eef2ff; color: #1d4ed8; }
+      #remote-setup a { display: inline-block; margin-top: 25px; color: #2563eb; font-weight: 700; text-decoration: none; }
+      #studio-status {
+        position: fixed;
+        z-index: 9999;
+        right: 18px;
+        bottom: 18px;
+        max-width: 320px;
+        padding: 12px 15px;
+        border: 1px solid #d9dee7;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, .96);
+        box-shadow: 0 16px 45px rgba(15, 23, 42, .12);
+        color: #445064;
+        font: 12px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      #studio-status[hidden] { display: none; }
+      #studio-status strong { display: block; margin-bottom: 2px; color: #111827; }
+      @media (max-width: 640px) { #studio-status { display: none; } }
+    </style>
+  </head>
+  <body>
+    <main id="remote-setup" hidden>
+      <small>SHI LAB · CONTENT STUDIO</small>
+      <h1>远程内容后台等待 OAuth 授权</h1>
+      <p>
+        MDX 内容库与 GitHub 仓库已经就绪，当前还需要完成 GitHub OAuth 代理配置，远程写入随后即可启用。
+        本地可运行 <code>pnpm content:studio</code> 后访问本页。
+      </p>
+      <a href="/">← 返回网站首页</a>
+    </main>
+    <div id="studio-status">
+      <strong>SHI LAB · MDX CONTENT STUDIO</strong>
+      本地运行 <code>pnpm content:studio</code> 后，可视化编辑会直接写入内容库。
+    </div>
+    <script>
+      const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+      fetch('./config.yml')
+        .then((response) => response.text())
+        .then((config) => {
+          const remoteReady = !config.includes('REPLACE_WITH_');
+          if (!isLocal && !remoteReady) {
+            document.getElementById('remote-setup').hidden = false;
+            document.getElementById('studio-status').hidden = true;
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/decap-cms@3.12.2/dist/decap-cms.js';
+          document.body.appendChild(script);
+        });
+    </script>
+  </body>
+</html>
