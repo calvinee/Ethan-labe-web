@@ -1,4 +1,4 @@
-import { blog, learning, notes, products, tools } from 'collections/server';
+import { blog, learning, notes, products } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
 import type { ComponentType } from 'react';
@@ -76,10 +76,6 @@ export const learningSource = loader(toFumadocsSource(learning, []), {
   baseUrl: '/learn',
 }) as unknown as TypedSource<ManagedDocData>;
 
-export const toolsSource = loader(toFumadocsSource(tools, []), {
-  baseUrl: '/tools',
-}) as unknown as TypedSource<ManagedDocData>;
-
 export type BlogEntry = {
   slug: string;
   href: string;
@@ -108,7 +104,7 @@ export type NoteEntry = {
   tag: string;
 };
 
-export type ManagedSection = 'products' | 'learn' | 'tools';
+export type ManagedSection = 'products' | 'learn';
 
 export type ManagedEntry = {
   slug: string;
@@ -131,8 +127,6 @@ export type ManagedEntry = {
     | 'code'
     | 'scan'
     | 'gauge'
-    | 'calculator'
-    | 'wrench'
     | 'rocket'
     | 'package'
     | 'boxes';
@@ -244,14 +238,9 @@ export function getLearningEntries(): ManagedEntry[] {
   return normalizeManagedPages('learn', learningSource.getPages());
 }
 
-export function getToolEntries(): ManagedEntry[] {
-  return normalizeManagedPages('tools', toolsSource.getPages());
-}
-
 export function getManagedEntries(section: ManagedSection): ManagedEntry[] {
   if (section === 'products') return getProductEntries();
-  if (section === 'learn') return getLearningEntries();
-  return getToolEntries();
+  return getLearningEntries();
 }
 
 export function getUnifiedSearchIndex(): SearchItem[] {
@@ -286,12 +275,6 @@ export function getUnifiedSearchIndex(): SearchItem[] {
       description: `${item.eyebrow} · ${item.description}`,
       href: item.href,
       group: '系统学习',
-    })),
-    ...getToolEntries().map((item) => ({
-      title: item.title,
-      description: `${item.eyebrow} · ${item.description}`,
-      href: item.href,
-      group: '工程工具',
     })),
   ];
 }

@@ -11,10 +11,7 @@ import {
   ScanLine,
   ShoppingBag,
   Terminal,
-  Wrench,
-  Zap,
 } from 'lucide-react';
-import { JoinForm } from '@/components/join-form';
 import { featuredProjects } from '@/lib/content';
 import { getBlogEntries, getNoteEntries } from '@/lib/mdx-content';
 
@@ -52,13 +49,6 @@ const labAreas = [
     description: '以可验收项目为主线，建立从 RTL 到工程交付的知识体系。',
     meta: '5 阶段 · 42 核心课时',
     href: '/learn',
-  },
-  {
-    icon: Wrench,
-    title: '工程工具',
-    description: '时钟、带宽、数制与约束模板，减少重复计算和低价值操作。',
-    meta: '浏览器本地计算',
-    href: '/tools',
   },
   {
     icon: Cpu,
@@ -301,7 +291,7 @@ export default function HomePage() {
             <p className="research-label">EXPLORE THE LAB</p>
             <h2>实验室地图</h2>
           </div>
-          <p>从内容、学习、工具到产品，形成一套可以持续生长的工程系统。</p>
+          <p>从内容、系统学习到产品交付，形成一套可以持续生长的工程系统。</p>
         </div>
         <div className="lab-directory-grid">
           {labAreas.map((area) => {
@@ -337,16 +327,6 @@ export default function HomePage() {
           </p>
           <Link href="/guide">阅读工程交付指南 <ArrowRight size={16} /></Link>
         </div>
-      </section>
-
-      <section className="research-section research-newsletter" id="newsletter">
-        <div className="newsletter-badge"><Zap size={22} /></div>
-        <div>
-          <p className="research-label">LAB SIGNAL / 实验室信号</p>
-          <h2>每两周，一封值得工程师打开的简报。</h2>
-          <p>新文章、项目进展、器件观察与工程工具。不追热点，只积累长期有用的内容。</p>
-        </div>
-        <JoinForm />
       </section>
     </div>
   );

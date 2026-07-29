@@ -1,10 +1,25 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "shi-fpga-lab",
-  "compatibility_date": "2026-07-28",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-07-29",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./out",
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "shi-lab-users",
+      "database_id": "487f1aa9-f5da-4d24-8b11-0c0ecc073466",
+      "migrations_dir": "./migrations"
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
   }
 }

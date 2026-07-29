@@ -20,7 +20,6 @@ import {
   Sparkles,
   TerminalSquare,
   Users,
-  Wrench,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -36,7 +35,6 @@ export const navItems: NavItem[] = [
   { label: 'Showcase', href: '/showcase', icon: CircuitBoard, short: '代表项目与验证证据' },
   { label: '产品项目', href: '/products', icon: ShoppingBag, short: 'IP 核、PCB 与 AI 硬件' },
   { label: '系统学习', href: '/learn', icon: GraduationCap, short: '从入门到工程交付' },
-  { label: '工程工具', href: '/tools', icon: Wrench, short: '常用计算与效率工具' },
 ];
 
 export type ContentCard = {
@@ -437,22 +435,6 @@ export const sectionContent: Record<string, SectionContent> = {
         tags: ['渠道', '交付'],
       },
     ],
-  },
-  tools: {
-    slug: 'tools',
-    eyebrow: 'ENGINEER TOOLBOX / 工程工具',
-    title: '把重复计算交给工具，把注意力留给设计',
-    description:
-      '面向 FPGA 日常工作的小工具集合。可直接在浏览器中使用，不上传数据，并附带公式与工程提示。',
-    accent: '#5ee0aa',
-    icon: Wrench,
-    stats: [
-      { value: '8', label: '在线工具' },
-      { value: '0', label: '数据上传' },
-      { value: '100%', label: '浏览器计算' },
-    ],
-    filters: ['在线计算', '时钟与时序', '带宽', '数制转换', '约束模板'],
-    cards: [],
   },
 };
 

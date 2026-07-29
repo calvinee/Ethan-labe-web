@@ -7,14 +7,12 @@ import {
   Check,
   ChevronRight,
   Clock3,
-  Calculator,
   CircuitBoard,
   Code2,
   Cpu,
   Filter,
   Gauge,
   Layers3,
-  Mail,
   MessageSquareText,
   PackageCheck,
   PackageOpen,
@@ -25,14 +23,12 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
-  Wrench,
   Boxes,
   type LucideIcon,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { sectionContent, type ContentCard } from '@/lib/content';
 import type { ManagedEntry } from '@/lib/mdx-content';
-import { EngineeringTools } from './engineering-tools';
 
 const managedIconMap: Record<ManagedEntry['icon'], LucideIcon> = {
   cpu: Cpu,
@@ -42,8 +38,6 @@ const managedIconMap: Record<ManagedEntry['icon'], LucideIcon> = {
   code: Code2,
   scan: ScanLine,
   gauge: Gauge,
-  calculator: Calculator,
-  wrench: Wrench,
   rocket: Rocket,
   package: PackageOpen,
   boxes: Boxes,
@@ -162,12 +156,10 @@ export function SectionView({
         </section>
       )}
 
-      {slug === 'tools' && <EngineeringTools />}
       {slug === 'products' && <ProductPromise />}
       {slug === 'community' && <CommunityRules />}
       {slug === 'learn' && <LearningMethod />}
       {slug === 'partners' && <PartnerCall />}
-      {slug === 'blog' && <ArticleNewsletter />}
     </div>
   );
 }
@@ -260,22 +252,6 @@ function PartnerCall() {
       <a className="button button-light" href="mailto:partner@shilab.example">
         发送合作介绍 <Send size={17} />
       </a>
-    </section>
-  );
-}
-
-function ArticleNewsletter() {
-  return (
-    <section className="section article-newsletter">
-      <Mail size={25} />
-      <div>
-        <p className="eyebrow">LAB SIGNAL</p>
-        <h2>不想错过下一篇项目复盘？</h2>
-        <p>每两周一封工程简报，只发送实验室的新内容和真正值得关注的器件动态。</p>
-      </div>
-      <Link href="/#newsletter" className="button button-dark">
-        订阅实验室信号 <ArrowRight size={17} />
-      </Link>
     </section>
   );
 }

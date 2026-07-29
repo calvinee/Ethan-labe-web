@@ -8,7 +8,7 @@
 pnpm content:studio
 ```
 
-然后打开 `http://localhost:3000/admin/`。后台包含工程文章、工程速记、产品项目、系统学习和工程工具应用五个内容库：
+然后打开 `http://localhost:3000/admin/`。后台包含工程文章、工程速记、产品项目和系统学习四个内容库：
 
 - 保存 MDX 文件后，开发页面会自动刷新。
 - `draft: true` 的内容不会出现在网站、搜索或 sitemap。
@@ -21,7 +21,6 @@ pnpm content:studio
 - `content/notes/*.mdx`
 - `content/products/*.mdx`
 - `content/learn/*.mdx`
-- `content/tools/*.mdx`
 
 完整编辑、审核、发布和回滚步骤见：
 
@@ -53,3 +52,13 @@ GitHub 仓库需要以下 Actions Secrets：
 - `CLOUDFLARE_API_TOKEN`
 
 可视化后台发布文章，本质上是向 `main` 分支提交 MDX；提交成功后，GitHub Actions 会自动构建并上线。
+
+## 注册用户管理
+
+- 邮箱注册与登录入口：网站右上角“登录 / 注册”
+- 账号中心：`/account/`
+- 用户管理：`/admin/users/`
+- 用户与会话数据：Cloudflare D1 数据库 `shi-lab-users`
+
+用户管理页只允许 `admin` 角色访问。首次部署后，先注册站长账号，再按照
+`docs/USER_MANAGEMENT_SOP.md` 完成一次管理员初始化。

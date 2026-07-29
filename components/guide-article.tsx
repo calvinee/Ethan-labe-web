@@ -270,18 +270,6 @@ export function GuideArticle() {
           <Link href="/products">查看实验室产品 <ArrowRight size={16} /></Link>
         </section>
 
-        <section className="magazine-article-subscribe">
-          <span className="magazine-stamp">S</span>
-          <div>
-            <h3>订阅时工工程杂志</h3>
-            <p>和 FPGA、AI 硬件工程师一起，把项目经验变成可复用的公共知识。</p>
-          </div>
-          <form onSubmit={(event) => event.preventDefault()}>
-            <input type="email" aria-label="邮箱" placeholder="Type your email..." />
-            <button type="submit">订阅</button>
-          </form>
-        </section>
-
         <div className="magazine-bottom-actions">
           <button><Heart size={18} /> 198</button>
           <button><MessageCircle size={18} /> 27</button>

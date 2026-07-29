@@ -5,7 +5,6 @@ import {
   ArrowRight,
   Bookmark,
   Heart,
-  Mail,
   MessageCircle,
   Repeat2,
   Search,
@@ -182,28 +181,8 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
               <Link href="/products">IP 与硬件产品 <span>12</span></Link>
               <Link href="/learn">系统学习路线 <span>05</span></Link>
             </div>
-            <div className="magazine-side-subscribe">
-              <Mail size={20} />
-              <h3>订阅双周刊</h3>
-              <p>一篇长文、一项器件观察和一个工程工具。</p>
-              <a href="#subscribe">免费订阅</a>
-            </div>
           </aside>
         </div>
-
-        <section className="magazine-newsletter" id="subscribe">
-          <span className="magazine-stamp">S</span>
-          <div>
-            <p className="magazine-category">LAB SIGNAL · 双周刊</p>
-            <h2>让值得复现的工程经验，进入你的收件箱</h2>
-            <p>每两周一封：一篇工程长文、一项器件观察和一个工程工具。</p>
-          </div>
-          <form onSubmit={(event) => event.preventDefault()}>
-            <label className="sr-only" htmlFor="magazine-email">邮箱</label>
-            <input id="magazine-email" type="email" placeholder="name@example.com" />
-            <button type="submit">免费订阅</button>
-          </form>
-        </section>
       </main>
     </div>
   );

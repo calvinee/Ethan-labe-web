@@ -15,6 +15,7 @@ import {
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { navItems } from '@/lib/content';
 import type { SearchItem } from '@/lib/mdx-content';
+import { AuthPanel } from './auth-panel';
 
 function BrandMark() {
   return (
@@ -137,11 +138,7 @@ export function SiteShell({
                 <Command size={11} /> K
               </kbd>
             </button>
-            {magazineMode && (
-              <Link className="magazine-header-subscribe" href="/#newsletter">
-                订阅
-              </Link>
-            )}
+            <AuthPanel />
             <button className="icon-button" onClick={toggleTheme} aria-label="切换明暗主题">
               {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
             </button>
@@ -178,7 +175,7 @@ export function SiteShell({
             }}
           >
             <Search size={17} />
-            搜索文章、产品与工具
+            搜索文章、产品与课程
           </button>
           <nav className="mobile-nav">
             {navItems.map((item, index) => (
@@ -214,7 +211,7 @@ export function SiteShell({
                 ref={searchRef}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="搜索文章、IP 核、课程或工具…"
+                placeholder="搜索文章、IP 核或系统课程…"
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' && results[0]) openResult(results[0].href);
                 }}
@@ -281,7 +278,7 @@ export function SiteShell({
             <div>
               <span>产品</span>
               <Link href="/products">产品项目</Link>
-              <Link href="/tools">工程工具</Link>
+              <Link href="/account">账号中心</Link>
               <Link href="/guide">交付指南</Link>
             </div>
           </div>

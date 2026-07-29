@@ -25,9 +25,4 @@ export const learning = {
   dir: 'content/learn',
 };
 
-export const tools = {
-  type: 'doc',
-  dir: 'content/tools',
-};
-
 export default {};

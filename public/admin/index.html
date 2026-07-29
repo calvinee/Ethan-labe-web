@@ -40,10 +40,24 @@
       }
       #studio-status[hidden] { display: none; }
       #studio-status strong { display: block; margin-bottom: 2px; color: #111827; }
+      #user-admin-link {
+        position: fixed;
+        z-index: 10000;
+        top: 18px;
+        right: 18px;
+        padding: 10px 15px;
+        border-radius: 7px;
+        background: #111827;
+        color: #fff;
+        font: 700 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        text-decoration: none;
+        box-shadow: 0 12px 35px rgba(15, 23, 42, .18);
+      }
       @media (max-width: 640px) { #studio-status { display: none; } }
     </style>
   </head>
   <body>
+    <a id="user-admin-link" href="/admin/users/">用户管理</a>
     <main id="remote-setup" hidden>
       <small>SHI LAB · CONTENT STUDIO</small>
       <h1>远程内容后台等待 OAuth 授权</h1>
@@ -52,6 +66,7 @@
         本地可运行 <code>pnpm content:studio</code> 后访问本页。
       </p>
       <a href="/">← 返回网站首页</a>
+      <a href="/admin/users/" style="margin-left: 18px">打开用户管理</a>
     </main>
     <div id="studio-status">
       <strong>SHI LAB · MDX CONTENT STUDIO</strong>
