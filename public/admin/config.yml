@@ -89,3 +89,129 @@ collections:
       - { label: "标签", name: "tag", widget: "string", default: "BUILD LOG" }
       - { label: "草稿", name: "draft", widget: "boolean", default: true }
       - { label: "正文", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
+
+  - name: "products"
+    label: "产品项目"
+    label_singular: "产品"
+    folder: "content/products"
+    extension: "mdx"
+    format: "frontmatter"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{order}} · {{status}} · {{title}}"
+    sortable_fields: ["order", "date", "title", "status", "draft"]
+    view_filters:
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+      - label: "已发布"
+        field: "draft"
+        pattern: false
+    fields:
+      - { label: "产品名称", name: "title", widget: "string" }
+      - { label: "卡片摘要", name: "description", widget: "text", hint: "用于产品列表、搜索和 SEO。" }
+      - { label: "更新日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "英文眉题", name: "eyebrow", widget: "string", default: "FPGA PRODUCT" }
+      - { label: "规格摘要", name: "meta", widget: "string", hint: "例如：Verilog · 文档 · Testbench。" }
+      - { label: "交付状态", name: "status", widget: "string", default: "现货交付" }
+      - { label: "价格说明", name: "price", widget: "string", required: false, default: "联系咨询" }
+      - { label: "分类与标签", name: "tags", widget: "list", default: ["FPGA"] }
+      - label: "卡片图标"
+        name: "icon"
+        widget: "select"
+        default: "cpu"
+        options:
+          - { label: "处理器 / AI", value: "cpu" }
+          - { label: "高速接口", value: "radio" }
+          - { label: "板卡 / PCB", value: "board" }
+          - { label: "IP / 数据通路", value: "layers" }
+          - { label: "带宽 / 性能", value: "gauge" }
+          - { label: "器件 / 模块", value: "package" }
+          - { label: "方案设计", value: "boxes" }
+      - { label: "显示顺序", name: "order", widget: "number", value_type: "int", min: 0, default: 100, hint: "数字越小越靠前。" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: true, hint: "关闭后才会进入产品页、搜索和 sitemap。" }
+      - { label: "产品详情", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
+
+  - name: "learning"
+    label: "系统学习"
+    label_singular: "学习单元"
+    folder: "content/learn"
+    extension: "mdx"
+    format: "frontmatter"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{order}} · {{status}} · {{title}}"
+    sortable_fields: ["order", "date", "title", "status", "draft"]
+    view_filters:
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+      - label: "已发布"
+        field: "draft"
+        pattern: false
+    fields:
+      - { label: "课程/阶段名称", name: "title", widget: "string" }
+      - { label: "学习摘要", name: "description", widget: "text", hint: "用于学习路线卡片、搜索和 SEO。" }
+      - { label: "更新日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "阶段与周期", name: "eyebrow", widget: "string", default: "STAGE 01 · 2 周" }
+      - { label: "课时与验收", name: "meta", widget: "string", default: "8 课时 · 2 个验收实验" }
+      - { label: "学习级别", name: "status", widget: "string", default: "核心" }
+      - { label: "价格/开放说明", name: "price", widget: "string", required: false, default: "" }
+      - { label: "分类与标签", name: "tags", widget: "list", default: ["学习路线"] }
+      - label: "卡片图标"
+        name: "icon"
+        widget: "select"
+        default: "code"
+        options:
+          - { label: "RTL / 代码", value: "code" }
+          - { label: "时序 / CDC", value: "scan" }
+          - { label: "总线 / 存储", value: "layers" }
+          - { label: "板级 / 调试", value: "board" }
+          - { label: "项目 / 交付", value: "rocket" }
+      - { label: "显示顺序", name: "order", widget: "number", value_type: "int", min: 0, default: 100, hint: "数字越小越靠前。" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: true, hint: "关闭后才会进入学习页、搜索和 sitemap。" }
+      - { label: "课程/阶段详情", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
+
+  - name: "tools"
+    label: "工程工具应用"
+    label_singular: "工具"
+    folder: "content/tools"
+    extension: "mdx"
+    format: "frontmatter"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{order}} · {{status}} · {{title}}"
+    sortable_fields: ["order", "date", "title", "status", "draft"]
+    view_filters:
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+      - label: "已上线"
+        field: "status"
+        pattern: "已上线"
+    fields:
+      - { label: "工具名称", name: "title", widget: "string" }
+      - { label: "功能摘要", name: "description", widget: "text", hint: "用于工具目录、搜索和 SEO。" }
+      - { label: "更新日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "英文眉题/编号", name: "eyebrow", widget: "string", default: "ENGINEERING TOOL / 01" }
+      - { label: "版本或能力摘要", name: "meta", widget: "string", default: "在线计算 · 浏览器本地运行" }
+      - { label: "上线状态", name: "status", widget: "select", default: "规划中", options: ["规划中", "开发中", "内测中", "已上线", "已归档"] }
+      - { label: "附加说明", name: "price", widget: "string", required: false, default: "" }
+      - { label: "分类与标签", name: "tags", widget: "list", default: ["在线计算"] }
+      - label: "卡片图标"
+        name: "icon"
+        widget: "select"
+        default: "calculator"
+        options:
+          - { label: "计算器", value: "calculator" }
+          - { label: "时钟 / 接口", value: "radio" }
+          - { label: "性能 / 带宽", value: "gauge" }
+          - { label: "约束 / 分析", value: "scan" }
+          - { label: "代码 / 模板", value: "code" }
+          - { label: "通用工具", value: "wrench" }
+      - { label: "显示顺序", name: "order", widget: "number", value_type: "int", min: 0, default: 100, hint: "数字越小越靠前。" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: true, hint: "关闭后才会进入工具页、搜索和 sitemap。" }
+      - { label: "工具说明/更新记录", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
