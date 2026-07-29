@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { MagazineBlog } from '@/components/magazine-blog';
 import { SectionView } from '@/components/section-view';
 import { sectionContent } from '@/lib/content';
-import { getBlogEntries } from '@/lib/mdx-content';
+import { getBlogEntries, getManagedEntries, type ManagedSection } from '@/lib/mdx-content';
 
 const publicSections = ['blog', 'showcase', 'products', 'learn', 'tools'];
 
@@ -34,5 +34,8 @@ export default async function SectionPage({
   const { section } = await params;
   if (!publicSections.includes(section) || !sectionContent[section]) notFound();
   if (section === 'blog') return <MagazineBlog posts={getBlogEntries()} />;
-  return <SectionView slug={section} />;
+  const managedCards = ['products', 'learn', 'tools'].includes(section)
+    ? getManagedEntries(section as ManagedSection)
+    : undefined;
+  return <SectionView slug={section} managedCards={managedCards} />;
 }
