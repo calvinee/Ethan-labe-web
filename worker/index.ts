@@ -3,7 +3,8 @@ import { isLocalEmailCapture, sendAuthEmail } from './email';
 const encoder = new TextEncoder();
 const SESSION_COOKIE = 'shi_lab_session';
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
-const PASSWORD_ITERATIONS = 120_000;
+// Cloudflare Workers caps PBKDF2 at 100,000 iterations.
+const PASSWORD_ITERATIONS = 100_000;
 const MAX_BODY_LENGTH = 8_192;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1_000;
 const RATE_LIMIT_ATTEMPTS = 8;
