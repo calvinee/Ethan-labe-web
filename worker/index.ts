@@ -1,3 +1,5 @@
+import { isLocalEmailCapture, sendAuthEmail } from './email';
+
 const encoder = new TextEncoder();
 const SESSION_COOKIE = 'shi_lab_session';
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
@@ -5,6 +7,9 @@ const PASSWORD_ITERATIONS = 120_000;
 const MAX_BODY_LENGTH = 8_192;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1_000;
 const RATE_LIMIT_ATTEMPTS = 8;
+const EMAIL_RATE_LIMIT_ATTEMPTS = 3;
+const VERIFY_EMAIL_TOKEN_TTL_MS = 24 * 60 * 60 * 1_000;
+const RESET_PASSWORD_TOKEN_TTL_MS = 30 * 60 * 1_000;
 
 type UserRole = 'member' | 'admin';
 type UserStatus = 'active' | 'disabled';
@@ -21,6 +26,7 @@ type UserRow = {
   created_at: string;
   updated_at: string;
   last_login_at: string | null;
+  email_verified_at: string | null;
 };
 
 type PublicUser = {
@@ -31,6 +37,8 @@ type PublicUser = {
   status: UserStatus;
   createdAt: string;
   lastLoginAt: string | null;
+  emailVerified: boolean;
+  emailVerifiedAt: string | null;
 };
 
 type SessionContext = {
@@ -41,6 +49,17 @@ type SessionContext = {
 type AttemptRow = {
   attempts: number;
   window_started_at: number;
+};
+
+type AuthEmailPurpose = 'verify_email' | 'reset_password';
+
+type EmailTokenRow = {
+  token_hash: string;
+  user_id: string;
+  purpose: AuthEmailPurpose;
+  created_at: string;
+  expires_at: string;
+  consumed_at: string | null;
 };
 
 function json(data: unknown, status = 200, headers?: HeadersInit): Response {
@@ -62,6 +81,8 @@ function publicUser(user: UserRow): PublicUser {
     status: user.status,
     createdAt: user.created_at,
     lastLoginAt: user.last_login_at,
+    emailVerified: Boolean(user.email_verified_at),
+    emailVerifiedAt: user.email_verified_at,
   };
 }
 
@@ -268,36 +289,123 @@ async function takeAuthAttempt(
   env: Env,
   email: string,
   action: string,
+  maxAttempts = RATE_LIMIT_ATTEMPTS,
 ): Promise<{ allowed: boolean; key: string }> {
   const key = await attemptKey(request, email, action);
   const now = Date.now();
   const row = await env.DB.prepare(
-    'SELECT attempts, window_started_at FROM auth_attempts WHERE attempt_key = ?',
+    `INSERT INTO auth_attempts (attempt_key, attempts, window_started_at)
+     VALUES (?, 1, ?)
+     ON CONFLICT(attempt_key)
+     DO UPDATE SET
+       attempts = CASE
+         WHEN auth_attempts.window_started_at <= ?
+           THEN 1
+         ELSE auth_attempts.attempts + 1
+       END,
+       window_started_at = CASE
+         WHEN auth_attempts.window_started_at <= ?
+           THEN excluded.window_started_at
+         ELSE auth_attempts.window_started_at
+       END
+     RETURNING attempts, window_started_at`,
   )
-    .bind(key)
+    .bind(key, now, now - RATE_LIMIT_WINDOW_MS, now - RATE_LIMIT_WINDOW_MS)
     .first<AttemptRow>();
 
-  if (!row || now - row.window_started_at >= RATE_LIMIT_WINDOW_MS) {
-    await env.DB.prepare(
-      `INSERT INTO auth_attempts (attempt_key, attempts, window_started_at)
-       VALUES (?, 1, ?)
-       ON CONFLICT(attempt_key)
-       DO UPDATE SET attempts = 1, window_started_at = excluded.window_started_at`,
-    )
-      .bind(key, now)
-      .run();
-    return { allowed: true, key };
-  }
-
-  if (row.attempts >= RATE_LIMIT_ATTEMPTS) return { allowed: false, key };
-  await env.DB.prepare('UPDATE auth_attempts SET attempts = attempts + 1 WHERE attempt_key = ?')
-    .bind(key)
-    .run();
-  return { allowed: true, key };
+  return { allowed: Boolean(row && row.attempts <= maxAttempts), key };
 }
 
 async function clearAuthAttempt(env: Env, key: string): Promise<void> {
   await env.DB.prepare('DELETE FROM auth_attempts WHERE attempt_key = ?').bind(key).run();
+}
+
+async function issueEmailToken(
+  env: Env,
+  userId: string,
+  purpose: AuthEmailPurpose,
+  ttlMs: number,
+): Promise<{ token: string; tokenHash: string }> {
+  const token = randomToken();
+  const tokenHash = await sha256(token);
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + ttlMs);
+  await env.DB.batch([
+    env.DB.prepare(
+      `DELETE FROM auth_email_tokens
+        WHERE expires_at <= ? OR consumed_at IS NOT NULL`,
+    ).bind(now.toISOString()),
+    env.DB.prepare(
+      `INSERT INTO auth_email_tokens (
+        token_hash, user_id, purpose, created_at, expires_at
+      ) VALUES (?, ?, ?, ?, ?)`,
+    ).bind(
+      tokenHash,
+      userId,
+      purpose,
+      now.toISOString(),
+      expiresAt.toISOString(),
+    ),
+  ]);
+  return { token, tokenHash };
+}
+
+async function deliverEmailToken(
+  request: Request,
+  env: Env,
+  user: UserRow,
+  purpose: AuthEmailPurpose,
+): Promise<string | undefined> {
+  const ttl = purpose === 'verify_email'
+    ? VERIFY_EMAIL_TOKEN_TTL_MS
+    : RESET_PASSWORD_TOKEN_TTL_MS;
+  const issued = await issueEmailToken(env, user.id, purpose, ttl);
+  try {
+    await sendAuthEmail(request, env, {
+      purpose,
+      recipient: user.email,
+      token: issued.token,
+      idempotencyKey: `${purpose}-${issued.tokenHash.slice(0, 32)}`,
+    });
+  } catch (error) {
+    await env.DB.prepare('DELETE FROM auth_email_tokens WHERE token_hash = ?')
+      .bind(issued.tokenHash)
+      .run();
+    throw error;
+  }
+  return isLocalEmailCapture(request, env) ? issued.token : undefined;
+}
+
+async function consumeEmailToken(
+  env: Env,
+  token: unknown,
+  purpose: AuthEmailPurpose,
+): Promise<EmailTokenRow | null> {
+  if (typeof token !== 'string' || token.length < 32 || token.length > 128) return null;
+  const tokenHash = await sha256(token);
+  const now = new Date().toISOString();
+  const tokenRow = await env.DB.prepare(
+    `SELECT * FROM auth_email_tokens
+      WHERE token_hash = ?
+        AND purpose = ?
+        AND consumed_at IS NULL
+        AND expires_at > ?
+      LIMIT 1`,
+  )
+    .bind(tokenHash, purpose, now)
+    .first<EmailTokenRow>();
+  if (!tokenRow) return null;
+
+  const consumed = await env.DB.prepare(
+    `UPDATE auth_email_tokens
+        SET consumed_at = ?
+      WHERE token_hash = ?
+        AND consumed_at IS NULL
+        AND expires_at > ?`,
+  )
+    .bind(now, tokenHash, now)
+    .run();
+  return Number(consumed.meta.changes) === 1 ? tokenRow : null;
 }
 
 async function register(request: Request, env: Env): Promise<Response> {
@@ -324,8 +432,8 @@ async function register(request: Request, env: Env): Promise<Response> {
   const passwordData = await passwordRecord(password);
   const now = new Date().toISOString();
   const userId = crypto.randomUUID();
-  await env.DB.prepare(
-    `INSERT INTO users (
+  const inserted = await env.DB.prepare(
+    `INSERT OR IGNORE INTO users (
        id, email, display_name, password_hash, password_salt, password_iterations,
        role, status, created_at, updated_at
      ) VALUES (?, ?, ?, ?, ?, ?, 'member', 'active', ?, ?)`,
@@ -341,20 +449,40 @@ async function register(request: Request, env: Env): Promise<Response> {
       now,
     )
     .run();
+  if (Number(inserted.meta.changes) !== 1) {
+    return json({ error: '该邮箱已经注册，请直接登录。' }, 409);
+  }
 
   const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?')
     .bind(userId)
     .first<UserRow>();
   if (!user) return json({ error: '账号创建失败，请稍后重试。' }, 500);
 
-  const token = await issueSession(env, user.id);
   await clearAuthAttempt(env, attempt.key);
+  let debugToken: string | undefined;
+  try {
+    debugToken = await deliverEmailToken(request, env, user, 'verify_email');
+  } catch (error) {
+    console.error(JSON.stringify({
+      event: 'verification_email_failed',
+      userId: user.id,
+      message: error instanceof Error ? error.message : 'unknown_error',
+    }));
+    return json({
+      error: '账号已创建，但验证邮件暂时发送失败。请在登录页选择“重发验证邮件”。',
+      code: 'EMAIL_DELIVERY_FAILED',
+      email,
+    }, 503);
+  }
   console.log(JSON.stringify({ event: 'user_registered', userId: user.id }));
-  return json(
-    { authenticated: true, user: publicUser(user) },
-    201,
-    { 'set-cookie': sessionCookie(token) },
-  );
+  return json({
+    ok: true,
+    authenticated: false,
+    requiresVerification: true,
+    email,
+    message: '验证邮件已发送，请在 24 小时内完成验证。',
+    ...(debugToken ? { debugToken } : {}),
+  }, 201);
 }
 
 async function login(request: Request, env: Env): Promise<Response> {
@@ -377,6 +505,13 @@ async function login(request: Request, env: Env): Promise<Response> {
   if (!user || !matches || user.status !== 'active') {
     return json({ error: '邮箱或密码不正确。' }, 401);
   }
+  if (!user.email_verified_at) {
+    return json({
+      error: '该邮箱尚未验证，请先检查收件箱。',
+      code: 'EMAIL_NOT_VERIFIED',
+      email: user.email,
+    }, 403);
+  }
 
   const now = new Date().toISOString();
   await env.DB.prepare('UPDATE users SET last_login_at = ?, updated_at = ? WHERE id = ?')
@@ -391,6 +526,175 @@ async function login(request: Request, env: Env): Promise<Response> {
     { authenticated: true, user: publicUser(user) },
     200,
     { 'set-cookie': sessionCookie(token) },
+  );
+}
+
+async function resendVerification(request: Request, env: Env): Promise<Response> {
+  const body = await readJson(request);
+  if (body instanceof Response) return body;
+  const email = normalizeEmail(body.email);
+  if (!validateEmail(email)) return json({ error: '请输入有效的邮箱地址。' }, 400);
+
+  const attempt = await takeAuthAttempt(
+    request,
+    env,
+    email,
+    'resend_verification',
+    EMAIL_RATE_LIMIT_ATTEMPTS,
+  );
+  if (!attempt.allowed) {
+    return json({ error: '发送次数过多，请 15 分钟后再试。' }, 429);
+  }
+
+  const user = await env.DB.prepare('SELECT * FROM users WHERE email = ? LIMIT 1')
+    .bind(email)
+    .first<UserRow>();
+  let debugToken: string | undefined;
+  if (user && user.status === 'active' && !user.email_verified_at) {
+    try {
+      debugToken = await deliverEmailToken(request, env, user, 'verify_email');
+    } catch (error) {
+      console.error(JSON.stringify({
+        event: 'verification_email_failed',
+        userId: user.id,
+        message: error instanceof Error ? error.message : 'unknown_error',
+      }));
+      return json({ error: '验证邮件暂时发送失败，请稍后重试。' }, 503);
+    }
+  }
+
+  return json({
+    ok: true,
+    message: '如果该邮箱存在且尚未验证，新的验证邮件已经发送。',
+    ...(debugToken ? { debugToken } : {}),
+  });
+}
+
+async function verifyEmail(request: Request, env: Env): Promise<Response> {
+  const body = await readJson(request);
+  if (body instanceof Response) return body;
+  const tokenRow = await consumeEmailToken(env, body.token, 'verify_email');
+  if (!tokenRow) {
+    return json({ error: '验证链接无效或已过期，请重新发送验证邮件。' }, 400);
+  }
+
+  const now = new Date().toISOString();
+  await env.DB.batch([
+    env.DB.prepare(
+      `UPDATE users
+          SET email_verified_at = COALESCE(email_verified_at, ?), updated_at = ?
+        WHERE id = ? AND status = 'active'`,
+    ).bind(now, now, tokenRow.user_id),
+    env.DB.prepare(
+      `UPDATE auth_email_tokens
+          SET consumed_at = COALESCE(consumed_at, ?)
+        WHERE user_id = ? AND purpose = 'verify_email'`,
+    ).bind(now, tokenRow.user_id),
+  ]);
+  const user = await env.DB.prepare('SELECT * FROM users WHERE id = ? LIMIT 1')
+    .bind(tokenRow.user_id)
+    .first<UserRow>();
+  if (!user || user.status !== 'active') return json({ error: '账号不可用。' }, 403);
+
+  const sessionToken = await issueSession(env, user.id);
+  console.log(JSON.stringify({ event: 'email_verified', userId: user.id }));
+  return json(
+    { authenticated: true, user: publicUser(user), message: '邮箱验证成功。' },
+    200,
+    { 'set-cookie': sessionCookie(sessionToken) },
+  );
+}
+
+async function requestPasswordReset(request: Request, env: Env): Promise<Response> {
+  const body = await readJson(request);
+  if (body instanceof Response) return body;
+  const email = normalizeEmail(body.email);
+  if (!validateEmail(email)) return json({ error: '请输入有效的邮箱地址。' }, 400);
+
+  const attempt = await takeAuthAttempt(
+    request,
+    env,
+    email,
+    'forgot_password',
+    EMAIL_RATE_LIMIT_ATTEMPTS,
+  );
+  if (!attempt.allowed) {
+    return json({ error: '发送次数过多，请 15 分钟后再试。' }, 429);
+  }
+
+  const user = await env.DB.prepare('SELECT * FROM users WHERE email = ? LIMIT 1')
+    .bind(email)
+    .first<UserRow>();
+  let debugToken: string | undefined;
+  if (user && user.status === 'active') {
+    try {
+      debugToken = await deliverEmailToken(request, env, user, 'reset_password');
+    } catch (error) {
+      console.error(JSON.stringify({
+        event: 'password_reset_email_failed',
+        userId: user.id,
+        message: error instanceof Error ? error.message : 'unknown_error',
+      }));
+    }
+  }
+
+  return json({
+    ok: true,
+    message: '如果该邮箱已注册，密码重置邮件将在几分钟内送达。',
+    ...(debugToken ? { debugToken } : {}),
+  });
+}
+
+async function resetPassword(request: Request, env: Env): Promise<Response> {
+  const body = await readJson(request);
+  if (body instanceof Response) return body;
+  const nextPassword = body.password;
+  if (!validatePassword(nextPassword)) {
+    return json({ error: '新密码需为 10–128 位，并同时包含字母和数字。' }, 400);
+  }
+
+  const tokenRow = await consumeEmailToken(env, body.token, 'reset_password');
+  if (!tokenRow) {
+    return json({ error: '重置链接无效或已过期，请重新申请。' }, 400);
+  }
+
+  const passwordData = await passwordRecord(nextPassword);
+  const now = new Date().toISOString();
+  await env.DB.batch([
+    env.DB.prepare(
+      `UPDATE users
+          SET password_hash = ?,
+              password_salt = ?,
+              password_iterations = ?,
+              email_verified_at = COALESCE(email_verified_at, ?),
+              updated_at = ?
+        WHERE id = ? AND status = 'active'`,
+    ).bind(
+      passwordData.hash,
+      passwordData.salt,
+      passwordData.iterations,
+      now,
+      now,
+      tokenRow.user_id,
+    ),
+    env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(tokenRow.user_id),
+    env.DB.prepare(
+      `UPDATE auth_email_tokens
+          SET consumed_at = COALESCE(consumed_at, ?)
+        WHERE user_id = ? AND purpose = 'reset_password'`,
+    ).bind(now, tokenRow.user_id),
+  ]);
+  const user = await env.DB.prepare('SELECT * FROM users WHERE id = ? LIMIT 1')
+    .bind(tokenRow.user_id)
+    .first<UserRow>();
+  if (!user || user.status !== 'active') return json({ error: '账号不可用。' }, 403);
+
+  const sessionToken = await issueSession(env, user.id);
+  console.log(JSON.stringify({ event: 'password_reset', userId: user.id }));
+  return json(
+    { authenticated: true, user: publicUser(user), message: '密码已重置。' },
+    200,
+    { 'set-cookie': sessionCookie(sessionToken) },
   );
 }
 
@@ -465,7 +769,8 @@ async function listUsers(request: Request, env: Env): Promise<Response> {
   const query = new URL(request.url).searchParams.get('q')?.trim().slice(0, 80) ?? '';
   const pattern = `%${query}%`;
   const result = await env.DB.prepare(
-    `SELECT id, email, display_name, role, status, created_at, updated_at, last_login_at
+    `SELECT id, email, display_name, role, status, created_at, updated_at,
+            last_login_at, email_verified_at
        FROM users
       WHERE ? = '' OR email LIKE ? OR display_name LIKE ?
       ORDER BY created_at DESC
@@ -483,6 +788,8 @@ async function listUsers(request: Request, env: Env): Promise<Response> {
       status: user.status,
       createdAt: user.created_at,
       lastLoginAt: user.last_login_at,
+      emailVerified: Boolean(user.email_verified_at),
+      emailVerifiedAt: user.email_verified_at,
     })),
   });
 }
@@ -563,6 +870,18 @@ async function api(request: Request, env: Env): Promise<Response> {
 
   if (path === '/api/auth/register' && request.method === 'POST') return register(request, env);
   if (path === '/api/auth/login' && request.method === 'POST') return login(request, env);
+  if (path === '/api/auth/resend-verification' && request.method === 'POST') {
+    return resendVerification(request, env);
+  }
+  if (path === '/api/auth/verify-email' && request.method === 'POST') {
+    return verifyEmail(request, env);
+  }
+  if (path === '/api/auth/forgot-password' && request.method === 'POST') {
+    return requestPasswordReset(request, env);
+  }
+  if (path === '/api/auth/reset-password' && request.method === 'POST') {
+    return resetPassword(request, env);
+  }
   if (path === '/api/auth/logout' && request.method === 'POST') return logout(request, env);
 
   const session = await sessionContext(request, env);

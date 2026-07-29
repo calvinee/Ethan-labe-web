@@ -3383,9 +3383,9 @@ button {
 
 .lab-portrait img {
   object-fit: cover;
-  object-position: 64% center;
-  filter: saturate(0.76) contrast(1.03);
-  transform: scale(1.04);
+  object-position: 52% center;
+  filter: saturate(0.92) contrast(1.02);
+  transform: scale(1.02);
 }
 
 .lab-portrait::after {
@@ -7194,6 +7194,64 @@ body.auth-modal-open {
   gap: 16px;
 }
 
+.auth-form-shell {
+  display: grid;
+}
+
+.auth-back-button,
+.auth-link-button,
+.auth-resend-button {
+  border: 0;
+  background: transparent;
+  color: var(--signal);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.auth-back-button {
+  width: max-content;
+  margin: 0 0 20px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.auth-link-button {
+  justify-self: end;
+  margin: -7px 0 -2px;
+  padding: 0;
+}
+
+.auth-flow-intro {
+  margin: 0 0 20px;
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  border: 1px solid color-mix(in srgb, var(--signal) 25%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--signal) 5%, var(--surface));
+}
+
+.auth-flow-intro > svg {
+  flex: 0 0 auto;
+  color: var(--signal);
+}
+
+.auth-flow-intro strong {
+  display: block;
+  font-size: 12px;
+}
+
+.auth-flow-intro p {
+  margin: 3px 0 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
 .auth-form label,
 .account-settings-grid label {
   display: grid;
@@ -7237,6 +7295,33 @@ body.auth-modal-open {
   background: color-mix(in srgb, #dc2626 6%, var(--surface));
   color: #b91c1c;
   font-size: 12px;
+}
+
+.auth-success {
+  margin: 0;
+  padding: 11px 12px;
+  border: 1px solid color-mix(in srgb, #059669 28%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, #059669 7%, var(--surface));
+  color: #047857;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.auth-resend-button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid color-mix(in srgb, var(--signal) 34%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--signal) 5%, var(--surface));
+}
+
+.auth-resend-button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
 }
 
 .auth-submit,
@@ -7313,6 +7398,16 @@ body.auth-modal-open {
   margin: 2px 0 0;
   color: var(--ink-faint);
   font-size: 10px;
+}
+
+.account-identity small {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #047857;
+  font-size: 9px;
+  font-weight: 700;
 }
 
 .account-identity em {
@@ -7426,6 +7521,36 @@ body.auth-modal-open {
 .account-page-header p {
   margin: 0;
   color: var(--ink-faint);
+}
+
+.account-email-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+}
+
+.account-email-line > span {
+  padding: 4px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.account-email-line > span.verified {
+  border-color: color-mix(in srgb, #059669 28%, var(--line));
+  background: color-mix(in srgb, #059669 7%, var(--surface));
+  color: #047857;
+}
+
+.account-email-line > span.pending {
+  border-color: color-mix(in srgb, #d97706 28%, var(--line));
+  background: color-mix(in srgb, #d97706 7%, var(--surface));
+  color: #b45309;
 }
 
 .account-page-header > em {
@@ -7584,7 +7709,7 @@ body.auth-modal-open {
   width: min(1180px, 100%);
   margin: 0 auto 18px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
@@ -7665,7 +7790,7 @@ body.auth-modal-open {
 
 .user-admin-table {
   width: 100%;
-  min-width: 940px;
+  min-width: 1030px;
   border-collapse: collapse;
   font-size: 12px;
 }
@@ -7717,11 +7842,217 @@ body.auth-modal-open {
   padding: 0 12px;
 }
 
+.user-verify-state {
+  width: max-content;
+  padding: 5px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.user-verify-state.verified {
+  border-color: color-mix(in srgb, #059669 26%, var(--line));
+  background: color-mix(in srgb, #059669 7%, var(--surface));
+  color: #047857;
+}
+
+.user-verify-state.pending {
+  border-color: color-mix(in srgb, #d97706 26%, var(--line));
+  background: color-mix(in srgb, #d97706 7%, var(--surface));
+  color: #b45309;
+}
+
 .user-admin-empty {
   margin: 0;
   padding: 42px;
   color: var(--ink-faint);
   text-align: center;
+}
+
+/* Email verification and password recovery */
+
+.email-action-page {
+  min-height: calc(100vh - 71px);
+  padding: clamp(58px, 10vw, 112px) 20px 120px;
+  display: grid;
+  place-items: start center;
+  background:
+    radial-gradient(circle at 50% 0, color-mix(in srgb, var(--signal) 10%, transparent), transparent 36%),
+    linear-gradient(rgba(37, 99, 235, .032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, .032) 1px, transparent 1px),
+    var(--bg);
+  background-size: auto, 32px 32px, 32px 32px, auto;
+}
+
+.email-action-card {
+  position: relative;
+  width: min(570px, 100%);
+  padding: clamp(30px, 6vw, 52px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 28px 85px rgba(15, 23, 42, .12);
+}
+
+.email-action-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--signal);
+}
+
+.email-action-card.success::before {
+  background: #059669;
+}
+
+.email-action-card.error::before {
+  background: #dc2626;
+}
+
+.email-action-icon {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--signal) 10%, var(--surface));
+  color: var(--signal);
+}
+
+.email-action-card.success .email-action-icon {
+  background: color-mix(in srgb, #059669 10%, var(--surface));
+  color: #047857;
+}
+
+.email-action-card.error .email-action-icon {
+  background: color-mix(in srgb, #dc2626 9%, var(--surface));
+  color: #b91c1c;
+}
+
+.email-action-card > p {
+  margin: 0 0 12px;
+  color: var(--signal);
+  font: 750 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .12em;
+}
+
+.email-action-card h1 {
+  margin: 0 0 13px;
+  font-size: clamp(30px, 6vw, 43px);
+  line-height: 1.08;
+  letter-spacing: -.05em;
+}
+
+.email-action-card > strong {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+.email-action-links {
+  margin-top: 29px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.email-action-links a,
+.email-reset-form > button {
+  min-height: 43px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--signal);
+  border-radius: 6px;
+  background: var(--signal);
+  color: var(--signal-ink);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.email-action-links a.secondary {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink-soft);
+}
+
+.email-reset-form {
+  margin-top: 25px;
+  display: grid;
+  gap: 15px;
+}
+
+.email-reset-form > p:not(.auth-error) {
+  margin: 0 0 3px;
+  padding: 11px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.email-reset-form > p > svg {
+  flex: 0 0 auto;
+  color: var(--signal);
+}
+
+.email-reset-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.email-reset-form label > span {
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.email-reset-form input {
+  width: 100%;
+  height: 46px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  outline: 0;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.email-reset-form input:focus {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--signal) 12%, transparent);
+}
+
+.email-reset-form > button {
+  margin-top: 3px;
+}
+
+.email-reset-form > button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: emailSpin .8s linear infinite;
+}
+
+@keyframes emailSpin {
+  to { transform: rotate(360deg); }
 }
 
 @media (max-width: 900px) {
@@ -7736,6 +8067,18 @@ body.auth-modal-open {
 
   .account-settings-grid {
     grid-template-columns: 1fr;
+  }
+
+  .user-admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .user-admin-stats > div:nth-child(3) {
+    border-left: 0;
+  }
+
+  .user-admin-stats > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
   }
 
   .user-admin-header {

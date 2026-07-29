@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, Settings, ShieldCheck, UserRound, X } from 'lucide-react';
+import { LogOut, MailCheck, Settings, ShieldCheck, UserRound, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { apiRequest, AuthForm, notifyAuthChanged, useCurrentUser } from './auth-client';
@@ -68,6 +68,7 @@ export function AuthPanel() {
                   <div>
                     <strong>{user.displayName}</strong>
                     <p>{user.email}</p>
+                    {user.emailVerified && <small><MailCheck size={11} /> 邮箱已验证</small>}
                   </div>
                   <em>{user.role === 'admin' ? '管理员' : '成员'}</em>
                 </div>

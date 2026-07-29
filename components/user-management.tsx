@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { RefreshCw, Search, ShieldAlert, ShieldCheck, Users } from 'lucide-react';
+import { MailCheck, RefreshCw, Search, ShieldAlert, ShieldCheck, Users } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { apiRequest, AuthForm, notifyAuthChanged, useCurrentUser } from './auth-client';
 
@@ -13,6 +13,8 @@ type ManagedUser = {
   status: 'active' | 'disabled';
   createdAt: string;
   lastLoginAt: string | null;
+  emailVerified: boolean;
+  emailVerifiedAt: string | null;
 };
 
 export function UserManagement() {
@@ -105,6 +107,7 @@ export function UserManagement() {
 
   const activeCount = users.filter((item) => item.status === 'active').length;
   const adminCount = users.filter((item) => item.role === 'admin').length;
+  const verifiedCount = users.filter((item) => item.emailVerified).length;
 
   return (
     <div className="user-admin-page">
@@ -122,6 +125,7 @@ export function UserManagement() {
 
       <section className="user-admin-stats">
         <div><Users size={19} /><strong>{users.length}</strong><span>注册用户</span></div>
+        <div><MailCheck size={19} /><strong>{verifiedCount}</strong><span>邮箱已验证</span></div>
         <div><ShieldCheck size={19} /><strong>{activeCount}</strong><span>启用账号</span></div>
         <div><ShieldCheck size={19} /><strong>{adminCount}</strong><span>管理员</span></div>
       </section>
@@ -147,6 +151,7 @@ export function UserManagement() {
           <thead>
             <tr>
               <th>用户</th>
+              <th>邮箱验证</th>
               <th>注册时间</th>
               <th>最近登录</th>
               <th>角色</th>
@@ -164,6 +169,12 @@ export function UserManagement() {
                   <td>
                     <strong>{item.displayName}{self ? '（当前账号）' : ''}</strong>
                     <span>{item.email}</span>
+                  </td>
+                  <td>
+                    <span className={`user-verify-state ${item.emailVerified ? 'verified' : 'pending'}`}>
+                      {item.emailVerified ? <MailCheck size={13} /> : null}
+                      {item.emailVerified ? '已验证' : '待验证'}
+                    </span>
                   </td>
                   <td>{new Date(item.createdAt).toLocaleDateString('zh-CN')}</td>
                   <td>{item.lastLoginAt ? new Date(item.lastLoginAt).toLocaleString('zh-CN') : '尚未登录'}</td>

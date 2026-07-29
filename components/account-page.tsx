@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { KeyRound, Save, ShieldCheck, UserRound } from 'lucide-react';
+import { KeyRound, MailCheck, Save, ShieldCheck, UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
   apiRequest,
@@ -87,7 +87,13 @@ export function AccountPage() {
         <div>
           <span>MEMBER PROFILE / 工程师账号</span>
           <h1>{user.displayName}</h1>
-          <p>{user.email}</p>
+          <p className="account-email-line">
+            {user.email}
+            <span className={user.emailVerified ? 'verified' : 'pending'}>
+              <MailCheck size={13} />
+              {user.emailVerified ? '邮箱已验证' : '邮箱待验证'}
+            </span>
+          </p>
         </div>
         <em>{user.role === 'admin' ? '管理员' : '实验室成员'}</em>
       </header>
