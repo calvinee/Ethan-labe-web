@@ -1,0 +1,13 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "shi-fpga-lab-cms-auth",
+  "main": "./src/index.mjs",
+  "compatibility_date": "2026-07-28",
+  "workers_dev": true,
+  "vars": {
+    "GITHUB_REPO_PRIVATE": "0"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
