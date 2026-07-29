@@ -7,31 +7,84 @@ import {
   Check,
   ChevronRight,
   Clock3,
+  Calculator,
+  CircuitBoard,
+  Code2,
+  Cpu,
   Filter,
+  Gauge,
+  Layers3,
   Mail,
   MessageSquareText,
   PackageCheck,
+  PackageOpen,
+  Radio,
+  Rocket,
+  ScanLine,
   Send,
   ShieldCheck,
   Sparkles,
   Users,
+  Wrench,
+  Boxes,
+  type LucideIcon,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { sectionContent } from '@/lib/content';
+import { sectionContent, type ContentCard } from '@/lib/content';
+import type { ManagedEntry } from '@/lib/mdx-content';
 import { EngineeringTools } from './engineering-tools';
 
-export function SectionView({ slug }: { slug: string }) {
+const managedIconMap: Record<ManagedEntry['icon'], LucideIcon> = {
+  cpu: Cpu,
+  radio: Radio,
+  board: CircuitBoard,
+  layers: Layers3,
+  code: Code2,
+  scan: ScanLine,
+  gauge: Gauge,
+  calculator: Calculator,
+  wrench: Wrench,
+  rocket: Rocket,
+  package: PackageOpen,
+  boxes: Boxes,
+};
+
+export function SectionView({
+  slug,
+  managedCards,
+}: {
+  slug: string;
+  managedCards?: ManagedEntry[];
+}) {
   const content = sectionContent[slug];
   const [activeFilter, setActiveFilter] = useState(content.filters[0]);
+  const stats = managedCards?.length
+    ? content.stats.map((stat, index) => (
+        index === 0 ? { ...stat, value: String(managedCards.length) } : stat
+      ))
+    : content.stats;
 
   const cards = useMemo(() => {
-    if (activeFilter === content.filters[0]) return content.cards;
+    const sourceCards: ContentCard[] = managedCards?.length
+      ? managedCards.map((card) => ({
+          eyebrow: card.eyebrow,
+          title: card.title,
+          description: card.description,
+          meta: card.meta,
+          href: card.href,
+          icon: managedIconMap[card.icon],
+          status: card.status,
+          price: card.price || undefined,
+          tags: card.tags,
+        }))
+      : content.cards;
+    if (activeFilter === content.filters[0]) return sourceCards;
     const keyword = activeFilter.replace('全部', '');
-    const matched = content.cards.filter((card) =>
+    const matched = sourceCards.filter((card) =>
       `${card.title}${card.eyebrow}${card.description}${card.tags?.join('')}`.includes(keyword),
     );
-    return matched.length > 0 ? matched : content.cards;
-  }, [activeFilter, content]);
+    return matched.length > 0 ? matched : sourceCards;
+  }, [activeFilter, content, managedCards]);
 
   return (
     <div className="section-page" style={{ '--section-accent': content.accent } as React.CSSProperties}>
@@ -42,7 +95,7 @@ export function SectionView({ slug }: { slug: string }) {
           <h1>{content.title}</h1>
           <p>{content.description}</p>
           <div className="section-stats">
-            {content.stats.map((stat) => (
+            {stats.map((stat) => (
               <div key={stat.label}>
                 <strong>{stat.value}</strong>
                 <span>{stat.label}</span>
@@ -63,7 +116,7 @@ export function SectionView({ slug }: { slug: string }) {
         </div>
       </section>
 
-      {slug !== 'tools' && (
+      {cards.length > 0 && (
         <section className="section section-content">
           <div className="filter-row">
             <div className="filter-label"><Filter size={15} /> FILTER</div>

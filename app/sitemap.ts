@@ -1,5 +1,11 @@
 import type { MetadataRoute } from 'next';
-import { getBlogEntries, getNoteEntries } from '@/lib/mdx-content';
+import {
+  getBlogEntries,
+  getLearningEntries,
+  getNoteEntries,
+  getProductEntries,
+  getToolEntries,
+} from '@/lib/mdx-content';
 
 export const dynamic = 'force-static';
 
@@ -28,5 +34,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...articles, ...notes];
+  const managed = [...getProductEntries(), ...getLearningEntries(), ...getToolEntries()].map((item) => ({
+    url: `${base}${item.href}`,
+    lastModified: new Date(`${item.date}T00:00:00+08:00`),
+    changeFrequency: 'monthly' as const,
+    priority: item.section === 'products' ? 0.8 : 0.7,
+  }));
+
+  return [...staticPages, ...articles, ...notes, ...managed];
 }
