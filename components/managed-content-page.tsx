@@ -16,12 +16,6 @@ const sectionLabels = {
     nextHref: '/blog',
     nextLabel: '阅读工程文章',
   },
-  tools: {
-    name: '工程工具',
-    back: '返回工程工具',
-    nextHref: '/blog',
-    nextLabel: '阅读工程方法',
-  },
 } as const;
 
 export function ManagedContentPage({

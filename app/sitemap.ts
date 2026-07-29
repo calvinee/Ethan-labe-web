@@ -4,14 +4,13 @@ import {
   getLearningEntries,
   getNoteEntries,
   getProductEntries,
-  getToolEntries,
 } from '@/lib/mdx-content';
 
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://shi-fpga-lab.shi-fpga-lab.workers.dev';
-  const staticPages: MetadataRoute.Sitemap = ['', '/blog', '/showcase', '/products', '/learn', '/tools', '/guide'].map(
+  const staticPages: MetadataRoute.Sitemap = ['', '/blog', '/showcase', '/products', '/learn', '/guide'].map(
     (path) => ({
       url: `${base}${path}`,
       lastModified: new Date('2026-07-29'),
@@ -34,7 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  const managed = [...getProductEntries(), ...getLearningEntries(), ...getToolEntries()].map((item) => ({
+  const managed = [...getProductEntries(), ...getLearningEntries()].map((item) => ({
     url: `${base}${item.href}`,
     lastModified: new Date(`${item.date}T00:00:00+08:00`),
     changeFrequency: 'monthly' as const,

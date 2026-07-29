@@ -5,7 +5,7 @@ import { SectionView } from '@/components/section-view';
 import { sectionContent } from '@/lib/content';
 import { getBlogEntries, getManagedEntries, type ManagedSection } from '@/lib/mdx-content';
 
-const publicSections = ['blog', 'showcase', 'products', 'learn', 'tools'];
+const publicSections = ['blog', 'showcase', 'products', 'learn'];
 
 export function generateStaticParams() {
   return publicSections.map((section) => ({ section }));
@@ -34,7 +34,7 @@ export default async function SectionPage({
   const { section } = await params;
   if (!publicSections.includes(section) || !sectionContent[section]) notFound();
   if (section === 'blog') return <MagazineBlog posts={getBlogEntries()} />;
-  const managedCards = ['products', 'learn', 'tools'].includes(section)
+  const managedCards = ['products', 'learn'].includes(section)
     ? getManagedEntries(section as ManagedSection)
     : undefined;
   return <SectionView slug={section} managedCards={managedCards} />;
