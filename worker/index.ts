@@ -913,7 +913,26 @@ async function api(request: Request, env: Env): Promise<Response> {
 export default {
   async fetch(request, env): Promise<Response> {
     const url = new URL(request.url);
-    if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    if (!url.pathname.startsWith('/api/')) {
+      const response = await env.ASSETS.fetch(request);
+      if (
+        response.status !== 404 ||
+        (request.method !== 'GET' && request.method !== 'HEAD') ||
+        !/%[0-9A-Fa-f]{2}/.test(url.pathname)
+      ) {
+        return response;
+      }
+
+      // Next's static export keeps an encoded MDX slug as a literal directory
+      // name. Cloudflare decodes the public URL once before resolving assets, so
+      // retry with escaped percent signs while keeping the canonical URL intact.
+      const encodedAssetUrl = new URL(url);
+      encodedAssetUrl.pathname = url.pathname.replaceAll('%', '%25');
+      const encodedResponse = await env.ASSETS.fetch(
+        new Request(encodedAssetUrl.toString(), request),
+      );
+      return encodedResponse.status === 404 ? response : encodedResponse;
+    }
 
     try {
       return await api(request, env);
