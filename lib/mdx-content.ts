@@ -149,12 +149,20 @@ const formatDate = (value: string, compact = false) => {
   return `${date.getFullYear()} 年 ${date.getMonth() + 1} 月 ${date.getDate()} 日`;
 };
 
+export function normalizeContentSlug(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 export function getBlogEntries(): BlogEntry[] {
   return blogSource
     .getPages()
     .filter((page) => !page.data.draft)
     .map((page) => ({
-      slug: page.slugs[0],
+      slug: normalizeContentSlug(page.slugs[0]),
       href: page.url,
       category: page.data.category,
       title: page.data.title,

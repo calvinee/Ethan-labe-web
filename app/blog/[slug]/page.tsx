@@ -3,16 +3,28 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowRight, ChevronDown, Clock3 } from 'lucide-react';
 import { ArticleActions, ReadingProgress } from '@/components/article-interactions';
-import { blogSource, getBlogEntries } from '@/lib/mdx-content';
+import {
+  blogSource,
+  getBlogEntries,
+  normalizeContentSlug,
+} from '@/lib/mdx-content';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+function getArticlePage(slug: string) {
+  const normalizedSlug = normalizeContentSlug(slug);
+  return blogSource
+    .getPages()
+    .find((page) => normalizeContentSlug(page.slugs[0]) === normalizedSlug);
+}
+
 export default async function BlogArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const page = blogSource.getPage([slug]);
-  const entry = getBlogEntries().find((post) => post.slug === slug);
+  const normalizedSlug = normalizeContentSlug(slug);
+  const page = getArticlePage(normalizedSlug);
+  const entry = getBlogEntries().find((post) => post.slug === normalizedSlug);
   if (!page || !entry) notFound();
 
   const Mdx = page.data.body;
@@ -110,7 +122,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const page = blogSource.getPage([slug]);
+  const page = getArticlePage(slug);
   if (!page) notFound();
   return {
     title: page.data.title,
@@ -119,5 +131,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export function generateStaticParams() {
-  return blogSource.getPages().map((page) => ({ slug: page.slugs[0] }));
+  return blogSource.getPages().map((page) => ({
+    slug: normalizeContentSlug(page.slugs[0]),
+  }));
 }
