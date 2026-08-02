@@ -13,9 +13,11 @@ import { useMemo, useState } from 'react';
 import type { BlogEntry } from '@/lib/mdx-content';
 
 const tabs = ['最新', '热门', '讨论'] as const;
+const INITIAL_ARCHIVE_COUNT = 3;
 
 export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('最新');
+  const [showAllPosts, setShowAllPosts] = useState(false);
   const featured = posts.find((post) => post.featured) ?? posts[0];
   const remainingPosts = posts.filter((post) => post.slug !== featured?.slug);
   const popularPosts = [...remainingPosts].sort((a, b) => b.likes - a.likes).slice(0, 3);
@@ -25,6 +27,10 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
     if (activeTab === '讨论') return [...remainingPosts].sort((a, b) => b.comments - a.comments);
     return remainingPosts;
   }, [activeTab, remainingPosts]);
+  const displayedPosts = showAllPosts
+    ? visiblePosts
+    : visiblePosts.slice(0, INITIAL_ARCHIVE_COUNT);
+  const hiddenPostCount = visiblePosts.length - displayedPosts.length;
 
   if (!featured) {
     return (
@@ -121,7 +127,10 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
                     aria-selected={activeTab === tab}
                     className={activeTab === tab ? 'active' : undefined}
                     key={tab}
-                    onClick={() => setActiveTab(tab)}
+                    onClick={() => {
+                      setActiveTab(tab);
+                      setShowAllPosts(false);
+                    }}
                   >
                     {tab}
                   </button>
@@ -132,8 +141,8 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
               </button>
             </div>
 
-            <div className="magazine-post-list">
-              {visiblePosts.map((post) => (
+            <div className="magazine-post-list" id="magazine-post-list">
+              {displayedPosts.map((post) => (
                 <article className="magazine-post" key={post.slug}>
                   <div className="magazine-post-copy">
                     <p className="magazine-category">{post.category}</p>
@@ -164,7 +173,17 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
               ))}
             </div>
 
-            <button className="magazine-see-all">查看全部文章 <ArrowRight size={16} /></button>
+            {hiddenPostCount > 0 && (
+              <button
+                type="button"
+                className="magazine-see-all"
+                aria-controls="magazine-post-list"
+                aria-expanded={showAllPosts}
+                onClick={() => setShowAllPosts(true)}
+              >
+                查看全部文章（还有 {hiddenPostCount} 篇） <ArrowRight size={16} />
+              </button>
+            )}
           </section>
 
           <aside className="magazine-sidebar">

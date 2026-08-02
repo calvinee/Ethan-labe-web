@@ -120,12 +120,12 @@ export default function HomePage() {
               fill
               priority
               sizes="(max-width: 900px) 92vw, 520px"
-              alt="FPGA 开发板与逻辑波形组成的半导体实验室工作台"
+              alt="手持 Digilent Genesys 2 FPGA 开发板实拍"
             />
             <div className="portrait-scan" aria-hidden="true" />
             <div className="portrait-caption">
               <span>SHI LAB / BENCH 01</span>
-              <strong>FPGA × EDGE AI</strong>
+              <strong>GENESYS 2 · KINTEX-7</strong>
             </div>
           </div>
 
