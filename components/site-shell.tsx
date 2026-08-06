@@ -29,6 +29,7 @@ export function SiteShell({
   const router = useRouter();
   const magazineMode =
     pathname.startsWith('/blog') ||
+    pathname.startsWith('/mindmaps') ||
     pathname.startsWith('/notes') ||
     pathname.startsWith('/guide');
   const searchRef = useRef<HTMLInputElement>(null);

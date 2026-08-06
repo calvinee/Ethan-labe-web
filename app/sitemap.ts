@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import {
   getBlogEntries,
   getLearningEntries,
+  getMindMapEntries,
   getNoteEntries,
   getProductEntries,
 } from '@/lib/mdx-content';
@@ -40,5 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: item.section === 'products' ? 0.8 : 0.7,
   }));
 
-  return [...staticPages, ...articles, ...notes, ...managed];
+  const mindmaps = getMindMapEntries().map((item) => ({
+    url: `${base}${item.href}`,
+    lastModified: new Date(`${item.date}T00:00:00+08:00`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...articles, ...notes, ...managed, ...mindmaps];
 }

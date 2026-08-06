@@ -1,0 +1,49 @@
+---
+title: FPGA × AI 硬件系统学习路线
+description: 从 RTL、数据通路到模型部署，建立面向真实 AI 加速项目的学习顺序。
+date: 2026-08-06
+category: 系统学习
+accent: violet
+center: FPGA × AI 能力树
+branches:
+  - title: 数字设计基础
+    summary: 建立同步设计和可验证 RTL 习惯
+    children:
+      - Verilog 与时序逻辑
+      - Testbench
+      - CDC 与复位
+  - title: 系统与数据
+    summary: 理解数据如何进入、缓存和离开芯片
+    children:
+      - AXI Stream / MM
+      - DDR 与 DMA
+      - 吞吐和延迟预算
+  - title: AI 加速架构
+    summary: 从算子强度判断硬件化价值
+    children:
+      - 卷积和矩阵乘
+      - 定点量化
+      - 流水与并行
+  - title: 端侧交付
+    summary: 把模型、驱动和板级验证连成系统
+    children:
+      - 模型转换
+      - Runtime 与驱动
+      - 功耗和精度验收
+draft: false
+---
+
+## 学习目标
+
+这条路线不以“学完语法”为终点，而以独立完成一个可测量、可复现的端侧 AI 加速项目为目标。
+
+## 学习顺序
+
+先打牢数字设计与验证，再进入总线和存储系统，随后学习量化、数据复用和并行架构，最后完成软硬件联合部署。
+
+## 每阶段都要留下证据
+
+- 仿真波形和自动化测试
+- 时序、资源与带宽报告
+- 板级精度、延迟和功耗记录
+- 可复现的构建说明

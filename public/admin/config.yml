@@ -23,6 +23,49 @@ media_folder: "public/uploads"
 public_folder: "/uploads"
 
 collections:
+  - name: "site_settings"
+    label: "网站与首页"
+    format: "json"
+    editor:
+      preview: false
+    files:
+      - name: "home_visuals"
+        label: "首页视觉设置"
+        file: "content/settings/home.json"
+        fields:
+          - { label: "首页封面图", name: "heroImage", widget: "image", hint: "替换首页右侧 FPGA 实拍封面。建议使用横图，宽度至少 1200px。" }
+          - { label: "封面图说明", name: "heroAlt", widget: "string", hint: "用于无障碍阅读和图片无法显示时的说明。" }
+          - { label: "首页背景图", name: "backgroundImage", widget: "image", required: false, hint: "可从媒体库的 backgrounds 目录选择，也可上传新图片。" }
+          - label: "默认背景风格"
+            name: "backgroundStyle"
+            widget: "select"
+            default: "nebula"
+            options:
+              - { label: "清爽阅读（不显示图片）", value: "clean" }
+              - { label: "星云作品（图片柔和融入）", value: "nebula" }
+              - { label: "深空展示（暗色沉浸）", value: "deep-space" }
+              - { label: "工程电路（技术网格）", value: "blueprint" }
+              - { label: "AI 极光（渐变氛围）", value: "aurora" }
+          - label: "背景焦点位置"
+            name: "backgroundPosition"
+            widget: "select"
+            default: "right top"
+            options:
+              - { label: "右上", value: "right top" }
+              - { label: "居中靠上", value: "center top" }
+              - { label: "左上", value: "left top" }
+              - { label: "正中", value: "center center" }
+          - label: "阅读遮罩强度"
+            name: "overlayStrength"
+            widget: "select"
+            default: "balanced"
+            hint: "背景越复杂，越建议使用均衡或强遮罩。"
+            options:
+              - { label: "柔和", value: "soft" }
+              - { label: "均衡（推荐）", value: "balanced" }
+              - { label: "强遮罩", value: "strong" }
+          - { label: "允许访客切换场景背景", name: "showBackgroundSwitcher", widget: "boolean", default: true }
+
   - name: "blog"
     label: "工程文章"
     label_singular: "文章"
@@ -66,6 +109,49 @@ collections:
       - { label: "评论数", name: "comments", widget: "number", value_type: "int", min: 0, default: 0 }
       - { label: "收藏数", name: "saves", widget: "number", value_type: "int", min: 0, default: 0 }
       - { label: "正文", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
+
+  - name: "mindmaps"
+    label: "思维导图"
+    label_singular: "导图"
+    folder: "content/mindmaps"
+    extension: "mdx"
+    format: "frontmatter"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{date}} · {{category}} · {{title}}"
+    sortable_fields: ["date", "title", "category", "draft"]
+    view_filters:
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+    fields:
+      - { label: "导图标题", name: "title", widget: "string" }
+      - { label: "导图摘要", name: "description", widget: "text", hint: "用于博客专栏卡片、搜索和 SEO。" }
+      - { label: "更新日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "栏目", name: "category", widget: "string", default: "工程方法" }
+      - label: "强调色"
+        name: "accent"
+        widget: "select"
+        default: "blue"
+        options:
+          - { label: "工程蓝", value: "blue" }
+          - { label: "高速青", value: "cyan" }
+          - { label: "AI 紫", value: "violet" }
+          - { label: "交付橙", value: "orange" }
+      - { label: "中心主题", name: "center", widget: "string", hint: "建议 6—12 个字。" }
+      - label: "主分支"
+        name: "branches"
+        widget: "list"
+        min: 2
+        max: 4
+        summary: "{{fields.title}}"
+        fields:
+          - { label: "分支标题", name: "title", widget: "string" }
+          - { label: "分支说明", name: "summary", widget: "text" }
+          - { label: "关键节点", name: "children", widget: "list", min: 1, field: { label: "节点", name: "item", widget: "string" } }
+      - { label: "草稿", name: "draft", widget: "boolean", default: false }
+      - { label: "导图详解", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
 
   - name: "notes"
     label: "工程速记"
