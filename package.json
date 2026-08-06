@@ -4,8 +4,10 @@
   "private": true,
   "packageManager": "pnpm@11.9.0",
   "scripts": {
+    "prebuild": "node scripts/update-github-profile.mjs",
     "dev": "next dev",
     "build": "next build --webpack",
+    "github:update": "node scripts/update-github-profile.mjs",
     "start": "serve out",
     "types:check": "next typegen && tsc --noEmit",
     "content:proxy": "decap-server",

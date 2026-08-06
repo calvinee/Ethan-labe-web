@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '17 */6 * * *'
   workflow_dispatch:
 
 permissions:
@@ -35,6 +37,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Refresh GitHub showcase snapshot
+        run: node scripts/update-github-profile.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_USERNAME: calvinee
+          GITHUB_UPDATE_REQUIRED: 'true'
+
       - name: Build static site
         run: pnpm build
 
@@ -61,7 +70,7 @@ jobs:
           command: deploy
 
       - name: Deploy CMS OAuth proxy
-        if: steps.cloudflare.outputs.enabled == 'true'
+        if: steps.cloudflare.outputs.enabled == 'true' && github.event_name != 'schedule'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
