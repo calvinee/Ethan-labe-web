@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MagazineBlog } from '@/components/magazine-blog';
+import { GitHubShowcase } from '@/components/github-showcase';
 import { SectionView } from '@/components/section-view';
 import { sectionContent } from '@/lib/content';
 import { getBlogEntries, getManagedEntries, type ManagedSection } from '@/lib/mdx-content';
@@ -37,5 +38,13 @@ export default async function SectionPage({
   const managedCards = ['products', 'learn'].includes(section)
     ? getManagedEntries(section as ManagedSection)
     : undefined;
+  if (section === 'showcase') {
+    return (
+      <>
+        <SectionView slug={section} />
+        <GitHubShowcase />
+      </>
+    );
+  }
   return <SectionView slug={section} managedCards={managedCards} />;
 }

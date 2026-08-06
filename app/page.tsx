@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { featuredProjects } from '@/lib/content';
 import { getBlogEntries, getNoteEntries } from '@/lib/mdx-content';
+import { GitHubShowcase } from '@/components/github-showcase';
 
 const startHere = [
   {
@@ -284,6 +285,8 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <GitHubShowcase compact />
 
       <section className="research-section lab-directory">
         <div className="research-section-head">

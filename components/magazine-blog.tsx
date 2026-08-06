@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { BlogEntry } from '@/lib/mdx-content';
+import { BrandMark } from './brand-mark';
 
 const tabs = ['最新', '热门', '讨论'] as const;
 const INITIAL_ARCHIVE_COUNT = 3;
@@ -36,7 +37,7 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
     return (
       <div className="magazine-page">
         <div className="magazine-empty">
-          <span className="magazine-stamp">S</span>
+          <BrandMark variant="journal" className="magazine-logo-mark" />
           <h1>工程杂志正在准备第一篇文章</h1>
           <p>在内容后台中新建文章并发布后，它会自动出现在这里。</p>
         </div>
@@ -188,7 +189,7 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
 
           <aside className="magazine-sidebar">
             <div className="magazine-about">
-              <span className="magazine-stamp">S</span>
+              <BrandMark variant="journal" className="magazine-logo-mark" />
               <p className="magazine-category">ABOUT THE JOURNAL</p>
               <h2>时工工程杂志</h2>
               <p>面向 FPGA 与 AI 硬件工程师的独立技术刊物。记录真实项目、工程判断与可验证的交付方法。</p>

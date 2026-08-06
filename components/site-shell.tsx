@@ -16,18 +16,7 @@ import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { navItems } from '@/lib/content';
 import type { SearchItem } from '@/lib/mdx-content';
 import { AuthPanel } from './auth-panel';
-
-function BrandMark() {
-  return (
-    <span className="brand-mark" aria-hidden="true">
-      <i />
-      <i />
-      <i />
-      <i />
-      <b>S</b>
-    </span>
-  );
-}
+import { BrandMark } from './brand-mark';
 
 export function SiteShell({
   children,
@@ -111,7 +100,7 @@ export function SiteShell({
       <header className={`site-header ${magazineMode ? 'magazine-shell-header' : ''}`}>
         <div className={`header-inner ${magazineMode ? 'magazine-shell-inner' : ''}`}>
           <Link href="/" className="brand" aria-label="时工的半导体实验室首页">
-            <BrandMark />
+            <BrandMark variant={magazineMode ? 'journal' : 'main'} />
             <span className="brand-copy">
               <strong>{magazineMode ? '时工工程杂志' : '时工的半导体实验室'}</strong>
               <small>{magazineMode ? 'SHI LAB JOURNAL' : "SHI'S SEMICONDUCTOR LAB"}</small>
@@ -157,10 +146,10 @@ export function SiteShell({
         <div className="mobile-panel" role="dialog" aria-modal="true" aria-label="移动端导航">
           <div className="mobile-panel-head">
             <Link href="/" className="brand">
-              <BrandMark />
+              <BrandMark variant={magazineMode ? 'journal' : 'main'} />
               <span className="brand-copy">
-                <strong>时工的半导体实验室</strong>
-                <small>SEMICONDUCTOR LAB</small>
+                <strong>{magazineMode ? '时工工程杂志' : '时工的半导体实验室'}</strong>
+                <small>{magazineMode ? 'SHI LAB JOURNAL' : 'SEMICONDUCTOR LAB'}</small>
               </span>
             </Link>
             <button className="icon-button" onClick={() => setMobileOpen(false)} aria-label="关闭菜单">
