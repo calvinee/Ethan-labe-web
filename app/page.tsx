@@ -13,8 +13,10 @@ import {
   Terminal,
 } from 'lucide-react';
 import { featuredProjects } from '@/lib/content';
+import { homeVisualSettings } from '@/lib/home-visuals';
 import { getBlogEntries, getNoteEntries } from '@/lib/mdx-content';
 import { GitHubShowcase } from '@/components/github-showcase';
+import { HomeVisualFrame } from '@/components/home-visual-frame';
 
 const startHere = [
   {
@@ -72,7 +74,8 @@ export default function HomePage() {
   const quickNotes = getNoteEntries().slice(0, 4);
 
   return (
-    <div className="research-home">
+    <HomeVisualFrame settings={homeVisualSettings}>
+      <div className="research-home">
       <section className="research-hero">
         <div className="research-hero-copy">
           <p className="research-kicker">
@@ -117,11 +120,11 @@ export default function HomePage() {
           </div>
           <div className="lab-portrait">
             <Image
-              src="/lab-hero.png"
+              src={homeVisualSettings.heroImage}
               fill
               priority
               sizes="(max-width: 900px) 92vw, 520px"
-              alt="手持 Digilent Genesys 2 FPGA 开发板实拍"
+              alt={homeVisualSettings.heroAlt}
             />
             <div className="portrait-scan" aria-hidden="true" />
             <div className="portrait-caption">
@@ -331,6 +334,7 @@ export default function HomePage() {
           <Link href="/guide">阅读工程交付指南 <ArrowRight size={16} /></Link>
         </div>
       </section>
-    </div>
+      </div>
+    </HomeVisualFrame>
   );
 }

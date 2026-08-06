@@ -1,0 +1,9 @@
+{
+  "heroImage": "/uploads/home/lab-hero-default.webp",
+  "heroAlt": "手持 Digilent Genesys 2 FPGA 开发板实拍",
+  "backgroundImage": "/uploads/backgrounds/pillars-of-creation.webp",
+  "backgroundStyle": "nebula",
+  "backgroundPosition": "right top",
+  "overlayStrength": "balanced",
+  "showBackgroundSwitcher": true
+}

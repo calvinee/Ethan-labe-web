@@ -1,4 +1,4 @@
-import { blog, learning, notes, products } from 'collections/server';
+import { blog, learning, mindmaps, notes, products } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
 import type { ComponentType } from 'react';
@@ -49,6 +49,15 @@ type ManagedDocData = BaseDocData & {
   draft: boolean;
 };
 
+type MindMapDocData = BaseDocData & {
+  date: string;
+  category: string;
+  accent: MindMapEntry['accent'];
+  center: string;
+  branches: MindMapBranch[];
+  draft: boolean;
+};
+
 type TypedPage<T> = {
   slugs: string[];
   url: string;
@@ -75,6 +84,10 @@ export const productsSource = loader(toFumadocsSource(products, []), {
 export const learningSource = loader(toFumadocsSource(learning, []), {
   baseUrl: '/learn',
 }) as unknown as TypedSource<ManagedDocData>;
+
+export const mindmapsSource = loader(toFumadocsSource(mindmaps, []), {
+  baseUrl: '/mindmaps',
+}) as unknown as TypedSource<MindMapDocData>;
 
 export type BlogEntry = {
   slug: string;
@@ -105,6 +118,25 @@ export type NoteEntry = {
 };
 
 export type ManagedSection = 'products' | 'learn';
+
+export type MindMapBranch = {
+  title: string;
+  summary: string;
+  children: string[];
+};
+
+export type MindMapEntry = {
+  slug: string;
+  href: string;
+  title: string;
+  description: string;
+  date: string;
+  displayDate: string;
+  category: string;
+  accent: 'blue' | 'cyan' | 'violet' | 'orange';
+  center: string;
+  branches: MindMapBranch[];
+};
 
 export type ManagedEntry = {
   slug: string;
@@ -251,6 +283,25 @@ export function getManagedEntries(section: ManagedSection): ManagedEntry[] {
   return getLearningEntries();
 }
 
+export function getMindMapEntries(): MindMapEntry[] {
+  return mindmapsSource
+    .getPages()
+    .filter((page) => !page.data.draft)
+    .map((page) => ({
+      slug: normalizeContentSlug(page.slugs[0]),
+      href: page.url,
+      title: page.data.title,
+      description: page.data.description,
+      date: page.data.date,
+      displayDate: formatDate(page.data.date),
+      category: page.data.category,
+      accent: page.data.accent,
+      center: page.data.center,
+      branches: page.data.branches ?? [],
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
 export function getUnifiedSearchIndex(): SearchItem[] {
   return [
     { title: '首页', description: '时工的半导体实验室', href: '/', group: '导航' },
@@ -283,6 +334,12 @@ export function getUnifiedSearchIndex(): SearchItem[] {
       description: `${item.eyebrow} · ${item.description}`,
       href: item.href,
       group: '系统学习',
+    })),
+    ...getMindMapEntries().map((item) => ({
+      title: item.title,
+      description: `${item.category} · ${item.description}`,
+      href: item.href,
+      group: '思维导图',
     })),
   ];
 }

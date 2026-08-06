@@ -3,20 +3,29 @@
 import Link from 'next/link';
 import {
   ArrowRight,
+  ArrowUpRight,
   Bookmark,
+  BrainCircuit,
   Heart,
   MessageCircle,
   Repeat2,
   Search,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import type { BlogEntry } from '@/lib/mdx-content';
+import type { BlogEntry, MindMapEntry } from '@/lib/mdx-content';
 import { BrandMark } from './brand-mark';
+import { MindMapCanvas } from './mindmap-canvas';
 
 const tabs = ['最新', '热门', '讨论'] as const;
 const INITIAL_ARCHIVE_COUNT = 3;
 
-export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
+export function MagazineBlog({
+  posts,
+  mindMaps,
+}: {
+  posts: BlogEntry[];
+  mindMaps: MindMapEntry[];
+}) {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('最新');
   const [showAllPosts, setShowAllPosts] = useState(false);
   const featured = posts.find((post) => post.featured) ?? posts[0];
@@ -52,6 +61,7 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
         <a href="#latest">FPGA 实战</a>
         <a href="#latest">AI 硬件</a>
         <a href="#latest">市场观察</a>
+        <a href="#mindmaps">思维导图</a>
         <Link href="/showcase">项目档案</Link>
         <Link href={featured.href}>长文</Link>
       </nav>
@@ -117,6 +127,35 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
             ))}
           </div>
         </section>
+
+        {mindMaps.length > 0 && (
+          <section className="magazine-mindmaps" id="mindmaps">
+            <div className="magazine-mindmaps-head">
+              <div>
+                <p className="magazine-category">MIND MAPS / ENGINEERING SYSTEMS</p>
+                <h2>思维导图专栏</h2>
+                <p>把复杂工程问题压缩成可检查、可复用的决策结构。</p>
+              </div>
+              <BrainCircuit size={28} />
+            </div>
+            <div className="magazine-mindmaps-grid">
+              {mindMaps.slice(0, 3).map((mindMap) => (
+                <Link href={mindMap.href} className={`mindmap-card mindmap-card-${mindMap.accent}`} key={mindMap.slug}>
+                  <div className="mindmap-card-meta">
+                    <span>{mindMap.category}</span>
+                    <time>{mindMap.displayDate}</time>
+                  </div>
+                  <MindMapCanvas entry={mindMap} />
+                  <div className="mindmap-card-copy">
+                    <h3>{mindMap.title}</h3>
+                    <p>{mindMap.description}</p>
+                    <span>展开导图 <ArrowUpRight size={15} /></span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="magazine-lower-grid">
           <section className="magazine-archive" id="latest">
@@ -200,6 +239,7 @@ export function MagazineBlog({ posts }: { posts: BlogEntry[] }) {
               <Link href="/showcase">项目档案 <span>11</span></Link>
               <Link href="/products">IP 与硬件产品 <span>12</span></Link>
               <Link href="/learn">系统学习路线 <span>05</span></Link>
+              <a href="#mindmaps">思维导图 <span>{String(mindMaps.length).padStart(2, '0')}</span></a>
             </div>
           </aside>
         </div>

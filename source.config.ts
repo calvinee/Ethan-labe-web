@@ -25,4 +25,9 @@ export const learning = {
   dir: 'content/learn',
 };
 
+export const mindmaps = {
+  type: 'doc',
+  dir: 'content/mindmaps',
+};
+
 export default {};
