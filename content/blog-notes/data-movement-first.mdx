@@ -1,0 +1,13 @@
+---
+title: 做 FPGA AI 加速时，先算数据搬运
+description: 算子吞吐只是上限；真正决定系统效率的，通常是片上缓存、DDR 带宽与数据复用方式。
+date: 2026-08-05
+category: AI 硬件
+tags:
+  - FPGA AI
+  - Bandwidth
+pinned: false
+draft: false
+---
+
+在决定并行度之前，先画出一份数据流预算：每个周期需要多少输入、结果写回多少、数据能复用几次、DDR 能否持续供给。很多“算力不足”最终都只是数据没有准时到达。

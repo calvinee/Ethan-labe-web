@@ -1,4 +1,4 @@
-import { blog, learning, mindmaps, products } from 'collections/server';
+import { blog, blogNotes, learning, mindmaps, products } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
 import type { ComponentType } from 'react';
@@ -29,6 +29,19 @@ type BlogDocData = BaseDocData & {
   likes: number;
   comments: number;
   saves: number;
+  coverImage?: string;
+  coverAlt?: string;
+};
+
+type BlogNoteDocData = BaseDocData & {
+  date: string;
+  category: string;
+  tags: string[];
+  pinned: boolean;
+  draft: boolean;
+  linkUrl?: string;
+  linkLabel?: string;
+  image?: string;
 };
 
 type ManagedDocData = BaseDocData & {
@@ -67,6 +80,10 @@ export const blogSource = loader(toFumadocsSource(blog, []), {
   baseUrl: '/blog',
 }) as unknown as TypedSource<BlogDocData>;
 
+export const blogNotesSource = loader(toFumadocsSource(blogNotes, []), {
+  baseUrl: '/blog/notes',
+}) as unknown as TypedSource<BlogNoteDocData>;
+
 export const productsSource = loader(toFumadocsSource(products, []), {
   baseUrl: '/products',
 }) as unknown as TypedSource<ManagedDocData>;
@@ -95,6 +112,23 @@ export type BlogEntry = {
   saves: number;
   visual: 'timing' | 'fpga' | 'market' | 'board' | 'ai' | 'delivery';
   featured: boolean;
+  coverImage?: string;
+  coverAlt?: string;
+};
+
+export type BlogNoteEntry = {
+  slug: string;
+  href: string;
+  title: string;
+  description: string;
+  date: string;
+  displayDate: string;
+  category: string;
+  tags: string[];
+  pinned: boolean;
+  linkUrl?: string;
+  linkLabel?: string;
+  image?: string;
 };
 
 export type ManagedSection = 'products' | 'learn';
@@ -189,8 +223,31 @@ export function getBlogEntries(): BlogEntry[] {
       saves: page.data.saves,
       visual: page.data.visual,
       featured: page.data.featured,
+      coverImage: page.data.coverImage,
+      coverAlt: page.data.coverAlt,
     }))
     .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+export function getBlogNotes(): BlogNoteEntry[] {
+  return blogNotesSource
+    .getPages()
+    .filter((page) => !page.data.draft)
+    .map((page) => ({
+      slug: normalizeContentSlug(page.slugs[0]),
+      href: `/blog/notes#${normalizeContentSlug(page.slugs[0])}`,
+      title: page.data.title,
+      description: page.data.description,
+      date: page.data.date,
+      displayDate: formatDate(page.data.date),
+      category: page.data.category,
+      tags: page.data.tags ?? [],
+      pinned: page.data.pinned,
+      linkUrl: page.data.linkUrl,
+      linkLabel: page.data.linkLabel,
+      image: page.data.image,
+    }))
+    .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.date.localeCompare(a.date));
 }
 
 function normalizeManagedPages(
@@ -280,6 +337,12 @@ export function getUnifiedSearchIndex(): SearchItem[] {
       description: `${post.category} · ${post.description}`,
       href: post.href,
       group: '工程杂志',
+    })),
+    ...getBlogNotes().map((note) => ({
+      title: note.title,
+      description: `${note.category} · ${note.description}`,
+      href: note.href,
+      group: 'Notes',
     })),
     ...getProductEntries().map((item) => ({
       title: item.title,

@@ -76,6 +76,30 @@ collections:
               - { label: "分类", name: "label", widget: "string", hint: "例如：量产工程、行业经历、荣誉奖项。" }
               - { label: "核心结论", name: "title", widget: "string", hint: "短句展示，不写职位和时间线。" }
               - { label: "补充说明", name: "description", widget: "string", hint: "灰白小字，避免论文长标题和冗长描述。" }
+      - name: "blog_editorial"
+        label: "工程杂志设置"
+        file: "content/settings/blog.json"
+        fields:
+          - { label: "杂志名称", name: "journalTitle", widget: "string" }
+          - { label: "英文副题", name: "journalSubtitle", widget: "string" }
+          - { label: "杂志简介", name: "journalDescription", widget: "text" }
+          - { label: "Notes 标题", name: "notesTitle", widget: "string" }
+          - { label: "Notes 简介", name: "notesDescription", widget: "text" }
+          - { label: "About 标题", name: "aboutTitle", widget: "string" }
+          - { label: "About 开场", name: "aboutIntro", widget: "text" }
+          - { label: "内容使命", name: "mission", widget: "text" }
+          - { label: "作者方向", name: "authorIntro", widget: "text", hint: "不写姓名、职位和公司时间线。" }
+          - { label: "联系说明", name: "contactText", widget: "text" }
+          - { label: "GitHub 地址", name: "githubUrl", widget: "string" }
+          - label: "能力背书"
+            name: "credentials"
+            widget: "list"
+            min: 1
+            max: 5
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "标题", name: "title", widget: "string" }
+              - { label: "简短说明", name: "description", widget: "string" }
 
   - name: "blog"
     label: "工程文章"
@@ -114,11 +138,44 @@ collections:
           - { label: "市场 / 紫", value: "market" }
           - { label: "板卡 / 绿", value: "board" }
           - { label: "交付 / 橙", value: "delivery" }
+      - { label: "文章封面图", name: "coverImage", widget: "image", required: false, hint: "用于杂志主页与文章详情。推荐 16:10 或 4:3 横图，至少 1200px 宽。未上传时自动使用工程图形封面。" }
+      - { label: "封面图说明", name: "coverAlt", widget: "string", required: false, hint: "简洁说明图片内容，用于无障碍阅读。" }
       - { label: "首页主推", name: "featured", widget: "boolean", default: false, hint: "建议始终只保留一篇主推文章。" }
       - { label: "草稿", name: "draft", widget: "boolean", default: false, hint: "默认直接发布；如需暂存且不公开，请开启草稿。" }
       - { label: "喜欢数", name: "likes", widget: "number", value_type: "int", min: 0, default: 0 }
       - { label: "评论数", name: "comments", widget: "number", value_type: "int", min: 0, default: 0 }
       - { label: "收藏数", name: "saves", widget: "number", value_type: "int", min: 0, default: 0 }
+      - { label: "正文", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
+
+  - name: "blog_notes"
+    label: "Notes 短笔记"
+    label_singular: "Note"
+    folder: "content/blog-notes"
+    extension: "mdx"
+    format: "frontmatter"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{date}} · {{category}} · {{title}}"
+    sortable_fields: ["date", "title", "category", "pinned", "draft"]
+    view_filters:
+      - label: "置顶"
+        field: "pinned"
+        pattern: true
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "一句话摘要", name: "description", widget: "text" }
+      - { label: "发布日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "分类", name: "category", widget: "string", default: "工程判断" }
+      - { label: "标签", name: "tags", widget: "list", default: ["FPGA"] }
+      - { label: "置顶", name: "pinned", widget: "boolean", default: false }
+      - { label: "配图", name: "image", widget: "image", required: false }
+      - { label: "相关链接", name: "linkUrl", widget: "string", required: false }
+      - { label: "链接文案", name: "linkLabel", widget: "string", required: false }
+      - { label: "草稿", name: "draft", widget: "boolean", default: false }
       - { label: "正文", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
 
   - name: "mindmaps"
@@ -138,7 +195,7 @@ collections:
         pattern: true
     fields:
       - { label: "导图标题", name: "title", widget: "string" }
-      - { label: "导图摘要", name: "description", widget: "text", hint: "用于博客专栏卡片、搜索和 SEO。" }
+      - { label: "导图摘要", name: "description", widget: "text", hint: "用于独立思维导图索引、搜索和 SEO。" }
       - { label: "更新日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
       - { label: "栏目", name: "category", widget: "string", default: "工程方法" }
       - label: "强调色"

@@ -7,7 +7,6 @@ import { sectionContent } from '@/lib/content';
 import {
   getBlogEntries,
   getManagedEntries,
-  getMindMapEntries,
   type ManagedSection,
 } from '@/lib/mdx-content';
 
@@ -40,7 +39,7 @@ export default async function SectionPage({
   const { section } = await params;
   if (!publicSections.includes(section) || !sectionContent[section]) notFound();
   if (section === 'blog') {
-    return <MagazineBlog posts={getBlogEntries()} mindMaps={getMindMapEntries()} />;
+    return <MagazineBlog posts={getBlogEntries()} />;
   }
   const managedCards = ['products', 'learn'].includes(section)
     ? getManagedEntries(section as ManagedSection)

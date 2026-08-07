@@ -18,7 +18,20 @@ export const metadata: Metadata = {
     description: '把工程问题做成作品、文章与产品。',
     type: 'website',
     locale: 'zh_CN',
-    images: ['/lab-hero.png'],
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: '时工工程杂志：FPGA、AI 硬件与工程交付',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '时工的半导体实验室',
+    description: '把工程问题做成作品、文章与产品。',
+    images: ['/og.png'],
   },
 };
 

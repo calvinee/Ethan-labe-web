@@ -10,6 +10,11 @@ export const blog = {
   dir: 'content/blog',
 };
 
+export const blogNotes = {
+  type: 'doc',
+  dir: 'content/blog-notes',
+};
+
 export const products = {
   type: 'doc',
   dir: 'content/products',

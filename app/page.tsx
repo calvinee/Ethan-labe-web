@@ -27,7 +27,7 @@ const startHere = [
     label: 'MIND MAPS',
     title: '查看思维导图',
     description: '把复杂系统拆成可理解、可复用的判断路径，快速建立工程全局观。',
-    href: '/blog#mindmaps',
+      href: '/mindmaps',
     accent: 'violet',
   },
   {

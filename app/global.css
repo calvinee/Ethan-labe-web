@@ -3388,6 +3388,664 @@ button {
   transform: scale(1.02);
 }
 
+/* Shi Lab Journal — editorial routes, short-form notes and independent archive */
+
+.magazine-main-mark {
+  display: none;
+}
+
+@media (min-width: 921px) {
+  .magazine-main-mark {
+    grid-column: 1;
+    justify-self: start;
+    display: block;
+  }
+
+  .magazine-main-mark .brand-mark {
+    width: 38px;
+    height: 38px;
+    display: block;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--line-strong) 75%, transparent);
+    border-radius: 5px;
+  }
+
+  .magazine-main-mark .brand-mark img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+}
+
+.magazine-cover-image {
+  object-fit: cover;
+}
+
+.magazine-feature-art:has(.magazine-cover-image)::after,
+.magazine-article-hero.has-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 62%, rgba(5, 10, 21, 0.32));
+}
+
+.magazine-feature-copy > p:nth-of-type(2) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.magazine-popular-art.has-cover,
+.magazine-post-art.has-cover {
+  border-color: var(--line);
+  background: var(--surface-muted);
+}
+
+.magazine-article-hero.has-cover {
+  position: relative;
+  min-height: 460px;
+  overflow: hidden;
+}
+
+.magazine-article-hero.has-cover figcaption {
+  position: absolute;
+  z-index: 2;
+  inset: auto 18px 15px;
+  color: #fff;
+  text-shadow: 0 1px 7px rgba(0, 0, 0, 0.45);
+}
+
+.magazine-inline-search {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.magazine-inline-search input {
+  width: 176px;
+  height: 36px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  outline: none;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.magazine-inline-search input:focus {
+  border-color: color-mix(in srgb, #2563eb 55%, var(--line));
+}
+
+.magazine-no-results {
+  padding: 55px 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.magazine-no-results strong {
+  color: var(--ink);
+  font-size: 18px;
+}
+
+.magazine-no-results p {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+
+.magazine-section-page {
+  min-height: calc(100vh - 104px);
+}
+
+.magazine-editorial-header {
+  padding: 64px 0 42px;
+  border-bottom: 1px solid var(--line);
+}
+
+.magazine-editorial-header h1 {
+  margin: 10px 0 13px;
+  color: var(--ink);
+  font-size: clamp(46px, 7vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.magazine-editorial-header > p:last-child {
+  max-width: 680px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.magazine-notes-page,
+.magazine-archive-page,
+.magazine-about-page,
+.magazine-mindmaps-page {
+  width: min(920px, calc(100% - 48px));
+  margin: 0 auto;
+  padding-bottom: 110px;
+}
+
+.magazine-notes-feed {
+  width: min(700px, 100%);
+  margin: 0 auto;
+}
+
+.magazine-note-card {
+  padding: 46px 0 42px;
+  scroll-margin-top: 120px;
+  border-bottom: 1px solid var(--line);
+}
+
+.magazine-note-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-faint);
+  font: 650 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.magazine-note-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #d92d37;
+}
+
+.magazine-note-card h2 {
+  margin: 13px 0 9px;
+  color: var(--ink);
+  font-size: clamp(25px, 4vw, 34px);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+
+.magazine-note-deck {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.magazine-note-body {
+  margin-top: 21px;
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.magazine-note-image {
+  position: relative;
+  min-height: 360px;
+  margin-top: 23px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.magazine-note-image img {
+  object-fit: cover;
+}
+
+.magazine-note-card footer {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.magazine-note-card footer div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.magazine-note-card footer span,
+.magazine-note-card footer a {
+  color: var(--ink-faint);
+  font-size: 10px;
+}
+
+.magazine-note-card footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.magazine-archive-group {
+  padding-top: 52px;
+  scroll-margin-top: 110px;
+}
+
+.magazine-archive-group-head {
+  padding-bottom: 18px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.magazine-archive-group-head h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 28px;
+  letter-spacing: -0.035em;
+}
+
+.magazine-archive-group-head p {
+  margin: 5px 0 0;
+  color: var(--ink-faint);
+  font-size: 12px;
+}
+
+.magazine-archive-group-head > span {
+  color: #2563eb;
+  font: 700 12px/1 ui-monospace, monospace;
+}
+
+.magazine-archive-group > div:last-child > a {
+  min-height: 89px;
+  padding: 17px 2px;
+  display: grid;
+  grid-template-columns: 145px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.magazine-archive-group a time {
+  color: var(--ink-faint);
+  font: 10px/1.4 ui-monospace, monospace;
+}
+
+.magazine-archive-group a > span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.magazine-archive-group a small {
+  color: #2563eb;
+  font-size: 9px;
+  letter-spacing: 0.07em;
+}
+
+.magazine-archive-group a strong {
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.magazine-archive-group a > svg {
+  color: var(--ink-faint);
+}
+
+.magazine-archive-group a:hover strong,
+.magazine-archive-group a:hover > svg {
+  color: #2563eb;
+}
+
+.magazine-about-hero {
+  text-align: center;
+}
+
+.magazine-about-hero > .brand-mark {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 22px;
+  display: block;
+  overflow: hidden;
+  border: 1px solid #d92d37;
+  border-radius: 6px;
+}
+
+.magazine-about-hero .brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.magazine-about-hero > p:last-child {
+  margin-inline: auto;
+}
+
+.magazine-about-intro {
+  padding: 52px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 34px;
+  border-bottom: 1px solid var(--line);
+}
+
+.magazine-about-intro span {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: #2563eb;
+}
+
+.magazine-about-intro h2 {
+  margin: 15px 0 8px;
+  color: var(--ink);
+  font-size: 18px;
+}
+
+.magazine-about-intro p,
+.magazine-about-credentials article p,
+.magazine-about-contact p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.magazine-about-credentials {
+  padding: 52px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.magazine-about-credentials > div {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+}
+
+.magazine-about-credentials article {
+  min-height: 132px;
+  padding: 22px;
+}
+
+.magazine-about-credentials article + article {
+  border-left: 1px solid var(--line);
+}
+
+.magazine-about-credentials h3 {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.magazine-about-contact {
+  padding: 50px 0 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 50px;
+}
+
+.magazine-about-contact h2 {
+  margin: 8px 0 10px;
+  color: var(--ink);
+  font-size: 30px;
+  letter-spacing: -0.04em;
+}
+
+.magazine-about-contact > div:last-child {
+  display: flex;
+  gap: 10px;
+}
+
+.magazine-about-contact a {
+  min-height: 38px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.magazine-mindmaps-page {
+  width: min(1180px, calc(100% - 48px));
+}
+
+.magazine-mindmaps-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.magazine-mindmaps-page-head > svg {
+  margin-bottom: 8px;
+  color: #2563eb;
+}
+
+.magazine-mindmaps-page .magazine-mindmaps-grid {
+  margin-top: 34px;
+}
+
+.magazine-mindmaps-page .mindmap-card-copy h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.magazine-journal-footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.magazine-journal-footer-main,
+.magazine-journal-footer-bottom {
+  width: min(920px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.magazine-journal-footer-main {
+  min-height: 168px;
+  padding: 38px 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 36px;
+}
+
+.magazine-journal-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+}
+
+.magazine-journal-footer-brand .brand-mark {
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.magazine-journal-footer-brand img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.magazine-journal-footer-brand span,
+.magazine-journal-footer-brand small {
+  display: block;
+}
+
+.magazine-journal-footer-brand small {
+  margin-top: 3px;
+  color: var(--ink-faint);
+  font: 7px/1 ui-monospace, monospace;
+  letter-spacing: 0.14em;
+}
+
+.magazine-journal-footer-main > p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.magazine-journal-footer-main nav {
+  display: flex;
+  gap: 18px;
+}
+
+.magazine-journal-footer-main nav a,
+.magazine-journal-footer-bottom {
+  color: var(--ink-faint);
+  font-size: 10px;
+}
+
+.magazine-journal-footer-bottom {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.05em;
+}
+
+.magazine-journal-footer-bottom a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 920px) {
+  .magazine-notes-page,
+  .magazine-archive-page,
+  .magazine-about-page,
+  .magazine-mindmaps-page,
+  .magazine-journal-footer-main,
+  .magazine-journal-footer-bottom {
+    width: calc(100% - 32px);
+  }
+
+  .magazine-about-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .magazine-about-credentials > div {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .magazine-about-credentials article:nth-child(3) {
+    border-left: 0;
+  }
+
+  .magazine-about-credentials article:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .magazine-mindmaps-page .magazine-mindmaps-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .magazine-journal-footer-main {
+    grid-template-columns: 1fr auto;
+  }
+
+  .magazine-journal-footer-main > p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .magazine-editorial-header {
+    padding: 46px 0 32px;
+  }
+
+  .magazine-editorial-header h1 {
+    font-size: 44px;
+  }
+
+  .magazine-inline-search input {
+    width: min(155px, 44vw);
+  }
+
+  .magazine-note-card {
+    padding: 36px 0;
+  }
+
+  .magazine-note-card footer,
+  .magazine-about-contact,
+  .magazine-journal-footer-main {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .magazine-note-image {
+    min-height: 230px;
+  }
+
+  .magazine-archive-group > div:last-child > a {
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .magazine-archive-group a time {
+    grid-column: 1 / -1;
+  }
+
+  .magazine-about-intro {
+    gap: 28px;
+  }
+
+  .magazine-about-credentials > div,
+  .magazine-mindmaps-page .magazine-mindmaps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .magazine-about-credentials article + article,
+  .magazine-about-credentials article:nth-child(3) {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .magazine-about-contact {
+    display: flex;
+  }
+
+  .magazine-mindmaps-page-head {
+    align-items: flex-start;
+  }
+
+  .magazine-journal-footer-main {
+    display: flex;
+    gap: 24px;
+  }
+
+  .magazine-journal-footer-main nav {
+    flex-wrap: wrap;
+  }
+
+  .magazine-journal-footer-bottom {
+    min-height: 66px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .magazine-article-hero.has-cover {
+    min-height: 300px;
+  }
+}
+
 /* Homepage visual settings and visitor scene modes */
 .home-visual-frame {
   position: relative;
