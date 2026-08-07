@@ -43,15 +43,15 @@ const formatSnapshotTime = (value: string) =>
 
 export function GitHubShowcase({ compact = false }: { compact?: boolean }) {
   const { profile, contributions } = githubProfile;
-  const repositories = githubProfile.repositories.slice(0, compact ? 3 : 6);
+  const repositories = githubProfile.repositories.slice(0, 6);
 
   return (
     <section className={`github-column ${compact ? 'github-column-compact' : ''}`}>
       <div className="github-column-heading">
         <div>
           <p className="research-label">GITHUB / OPEN SOURCE</p>
-          <h2>代码、复现与持续迭代</h2>
-          <p>项目不是一张最终效果图，而是一条可以检查提交、版本和工程证据的公开轨迹。</p>
+          <h2>{compact ? 'GitHub 公开贡献' : '代码、复现与持续迭代'}</h2>
+          {!compact && <p>项目不是一张最终效果图，而是一条可以检查提交、版本和工程证据的公开轨迹。</p>}
         </div>
         <a href={profile.url} rel="noreferrer" target="_blank">
           访问 GitHub <ArrowUpRight size={16} />
@@ -138,43 +138,47 @@ export function GitHubShowcase({ compact = false }: { compact?: boolean }) {
         </article>
       </div>
 
-      <div className="github-repositories-head">
-        <div>
-          <GitHubMark size={20} />
-          <h3>Popular repositories</h3>
-        </div>
-        <span>按 Star 自动排序 · 更新于 {formatSnapshotTime(githubProfile.generatedAt)}</span>
-      </div>
-      <div className="github-repository-grid">
-        {repositories.map((repository) => (
-          <a href={repository.url} key={repository.nameWithOwner} rel="noreferrer" target="_blank">
-            <div className="github-repository-title">
-              <BookOpen size={16} />
-              <strong>{repository.name}</strong>
-              <ArrowUpRight size={15} />
+      {!compact && (
+        <>
+          <div className="github-repositories-head">
+            <div>
+              <GitHubMark size={20} />
+              <h3>Popular repositories</h3>
             </div>
-            <p>{repository.description || '打开仓库查看工程说明、源代码与最新提交。'}</p>
-            {repository.topics.length > 0 && (
-              <div className="github-repository-topics">
-                {repository.topics.slice(0, 3).map((topic) => <span key={topic}>{topic}</span>)}
-              </div>
-            )}
-            <div className="github-repository-meta">
-              {repository.primaryLanguage && (
-                <span
-                  className="github-language"
-                  style={{ '--github-language': repository.primaryLanguage.color } as CSSProperties}
-                >
-                  <i /> {repository.primaryLanguage.name}
-                </span>
-              )}
-              <span><Star size={13} /> {repository.stargazerCount}</span>
-              <span><GitFork size={13} /> {repository.forkCount}</span>
-              <span className="github-updated">更新 {formatUpdatedAt(repository.updatedAt)}</span>
-            </div>
-          </a>
-        ))}
-      </div>
+            <span>按 Star 自动排序 · 更新于 {formatSnapshotTime(githubProfile.generatedAt)}</span>
+          </div>
+          <div className="github-repository-grid">
+            {repositories.map((repository) => (
+              <a href={repository.url} key={repository.nameWithOwner} rel="noreferrer" target="_blank">
+                <div className="github-repository-title">
+                  <BookOpen size={16} />
+                  <strong>{repository.name}</strong>
+                  <ArrowUpRight size={15} />
+                </div>
+                <p>{repository.description || '打开仓库查看工程说明、源代码与最新提交。'}</p>
+                {repository.topics.length > 0 && (
+                  <div className="github-repository-topics">
+                    {repository.topics.slice(0, 3).map((topic) => <span key={topic}>{topic}</span>)}
+                  </div>
+                )}
+                <div className="github-repository-meta">
+                  {repository.primaryLanguage && (
+                    <span
+                      className="github-language"
+                      style={{ '--github-language': repository.primaryLanguage.color } as CSSProperties}
+                    >
+                      <i /> {repository.primaryLanguage.name}
+                    </span>
+                  )}
+                  <span><Star size={13} /> {repository.stargazerCount}</span>
+                  <span><GitFork size={13} /> {repository.forkCount}</span>
+                  <span className="github-updated">更新 {formatUpdatedAt(repository.updatedAt)}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

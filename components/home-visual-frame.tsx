@@ -82,7 +82,7 @@ export function HomeVisualFrame({
           </summary>
           <div className="home-scene-menu">
             <div>
-              <span>选择适合当前阅读场景的背景</span>
+              <span>切换作用于整个首页</span>
               {visitorOverride && (
                 <button type="button" onClick={resetScene}>
                   <RotateCcw size={13} /> 跟随站点

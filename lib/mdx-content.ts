@@ -1,4 +1,4 @@
-import { blog, learning, mindmaps, notes, products } from 'collections/server';
+import { blog, learning, mindmaps, products } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
 import type { ComponentType } from 'react';
@@ -29,12 +29,6 @@ type BlogDocData = BaseDocData & {
   likes: number;
   comments: number;
   saves: number;
-};
-
-type NoteDocData = BaseDocData & {
-  date: string;
-  tag: string;
-  draft: boolean;
 };
 
 type ManagedDocData = BaseDocData & {
@@ -73,10 +67,6 @@ export const blogSource = loader(toFumadocsSource(blog, []), {
   baseUrl: '/blog',
 }) as unknown as TypedSource<BlogDocData>;
 
-export const notesSource = loader(toFumadocsSource(notes, []), {
-  baseUrl: '/notes',
-}) as unknown as TypedSource<NoteDocData>;
-
 export const productsSource = loader(toFumadocsSource(products, []), {
   baseUrl: '/products',
 }) as unknown as TypedSource<ManagedDocData>;
@@ -105,16 +95,6 @@ export type BlogEntry = {
   saves: number;
   visual: 'timing' | 'fpga' | 'market' | 'board' | 'ai' | 'delivery';
   featured: boolean;
-};
-
-export type NoteEntry = {
-  slug: string;
-  href: string;
-  title: string;
-  description: string;
-  date: string;
-  displayDate: string;
-  tag: string;
 };
 
 export type ManagedSection = 'products' | 'learn';
@@ -213,22 +193,6 @@ export function getBlogEntries(): BlogEntry[] {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function getNoteEntries(): NoteEntry[] {
-  return notesSource
-    .getPages()
-    .filter((page) => !page.data.draft)
-    .map((page) => ({
-      slug: page.slugs[0],
-      href: page.url,
-      title: page.data.title,
-      description: page.data.description,
-      date: page.data.date,
-      displayDate: formatDate(page.data.date, true),
-      tag: page.data.tag,
-    }))
-    .sort((a, b) => b.date.localeCompare(a.date));
-}
-
 function normalizeManagedPages(
   section: ManagedSection,
   pages: Array<{
@@ -316,12 +280,6 @@ export function getUnifiedSearchIndex(): SearchItem[] {
       description: `${post.category} · ${post.description}`,
       href: post.href,
       group: '工程杂志',
-    })),
-    ...getNoteEntries().map((note) => ({
-      title: note.title,
-      description: `${note.tag} · ${note.description}`,
-      href: note.href,
-      group: '工程速记',
     })),
     ...getProductEntries().map((item) => ({
       title: item.title,

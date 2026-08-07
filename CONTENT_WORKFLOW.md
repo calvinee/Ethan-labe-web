@@ -8,21 +8,22 @@
 pnpm content:studio
 ```
 
-然后打开 `http://localhost:3000/admin/`。后台包含网站与首页、工程文章、思维导图、工程速记、产品项目和系统学习内容库：
+然后打开 `http://localhost:3000/admin/`。后台包含网站与首页、工程文章、思维导图、产品项目和系统学习内容库：
 
 - 保存 MDX 文件后，开发页面会自动刷新。
 - `draft: true` 的内容不会出现在网站、搜索或 sitemap。
-- 关闭“草稿”并保存后，首页会按 `date` 自动更新“最新文章”或“工程速记”。
+- 关闭“草稿”并保存后，首页会按 `date` 自动更新“最新文章”。
 - `featured: true` 的文章成为博客首页主推文章。
 
 也可以直接编辑：
 
 - `content/blog/*.mdx`
-- `content/notes/*.mdx`
 - `content/products/*.mdx`
 - `content/learn/*.mdx`
 - `content/mindmaps/*.mdx`
 - `content/settings/home.json`
+
+原 `content/notes/*.mdx` 已保留为只读归档，但不再进入网站构建、站内搜索、sitemap 或管理后台。
 
 完整编辑、审核、发布和回滚步骤见：
 

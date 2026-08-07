@@ -65,6 +65,17 @@ collections:
               - { label: "均衡（推荐）", value: "balanced" }
               - { label: "强遮罩", value: "strong" }
           - { label: "允许访客切换场景背景", name: "showBackgroundSwitcher", widget: "boolean", default: true }
+          - label: "能力背书"
+            name: "credentials"
+            widget: "list"
+            min: 1
+            max: 5
+            summary: "{{fields.label}} · {{fields.title}}"
+            hint: "显示在 GitHub 贡献图下方。桌面端最多五列；建议每项只保留一条核心结论。"
+            fields:
+              - { label: "分类", name: "label", widget: "string", hint: "例如：量产工程、行业经历、荣誉奖项。" }
+              - { label: "核心结论", name: "title", widget: "string", hint: "短句展示，不写职位和时间线。" }
+              - { label: "补充说明", name: "description", widget: "string", hint: "灰白小字，避免论文长标题和冗长描述。" }
 
   - name: "blog"
     label: "工程文章"
@@ -152,29 +163,6 @@ collections:
           - { label: "关键节点", name: "children", widget: "list", min: 1, field: { label: "节点", name: "item", widget: "string" } }
       - { label: "草稿", name: "draft", widget: "boolean", default: false }
       - { label: "导图详解", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
-
-  - name: "notes"
-    label: "工程速记"
-    label_singular: "速记"
-    folder: "content/notes"
-    extension: "mdx"
-    format: "frontmatter"
-    create: true
-    delete: true
-    slug: "{{slug}}"
-    summary: "{{date}} · {{tag}} · {{title}}"
-    sortable_fields: ["date", "title", "tag", "draft"]
-    view_filters:
-      - label: "草稿"
-        field: "draft"
-        pattern: true
-    fields:
-      - { label: "标题", name: "title", widget: "string" }
-      - { label: "一句话摘要", name: "description", widget: "text" }
-      - { label: "发布日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
-      - { label: "标签", name: "tag", widget: "string", default: "BUILD LOG" }
-      - { label: "草稿", name: "draft", widget: "boolean", default: true }
-      - { label: "正文", name: "body", widget: "markdown", modes: ["rich_text", "raw"], required: true }
 
   - name: "products"
     label: "产品项目"

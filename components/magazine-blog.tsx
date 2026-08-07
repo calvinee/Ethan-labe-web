@@ -16,7 +16,7 @@ import type { BlogEntry, MindMapEntry } from '@/lib/mdx-content';
 import { BrandMark } from './brand-mark';
 import { MindMapCanvas } from './mindmap-canvas';
 
-const tabs = ['最新', '热门', '讨论'] as const;
+const tabs = ['最新', '热门'] as const;
 const INITIAL_ARCHIVE_COUNT = 3;
 
 export function MagazineBlog({
@@ -34,7 +34,6 @@ export function MagazineBlog({
 
   const visiblePosts = useMemo(() => {
     if (activeTab === '热门') return [...remainingPosts].sort((a, b) => b.likes - a.likes);
-    if (activeTab === '讨论') return [...remainingPosts].sort((a, b) => b.comments - a.comments);
     return remainingPosts;
   }, [activeTab, remainingPosts]);
   const displayedPosts = showAllPosts
@@ -175,6 +174,7 @@ export function MagazineBlog({
                     {tab}
                   </button>
                 ))}
+                <a href="#mindmaps">思维导图</a>
               </div>
               <button className="magazine-search" aria-label="搜索文章">
                 <Search size={20} />

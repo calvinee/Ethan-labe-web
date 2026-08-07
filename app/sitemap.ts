@@ -3,7 +3,6 @@ import {
   getBlogEntries,
   getLearningEntries,
   getMindMapEntries,
-  getNoteEntries,
   getProductEntries,
 } from '@/lib/mdx-content';
 
@@ -27,13 +26,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: post.featured ? 0.8 : 0.7,
   }));
 
-  const notes = getNoteEntries().map((note) => ({
-    url: `${base}${note.href}`,
-    lastModified: new Date(`${note.date}T00:00:00+08:00`),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }));
-
   const managed = [...getProductEntries(), ...getLearningEntries()].map((item) => ({
     url: `${base}${item.href}`,
     lastModified: new Date(`${item.date}T00:00:00+08:00`),
@@ -48,5 +40,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...articles, ...notes, ...managed, ...mindmaps];
+  return [...staticPages, ...articles, ...managed, ...mindmaps];
 }
