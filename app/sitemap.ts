@@ -10,7 +10,18 @@ export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://shi-fpga-lab.shi-fpga-lab.workers.dev';
-  const staticPages: MetadataRoute.Sitemap = ['', '/blog', '/showcase', '/products', '/learn', '/guide'].map(
+  const staticPages: MetadataRoute.Sitemap = [
+    '',
+    '/blog',
+    '/blog/notes',
+    '/blog/archive',
+    '/blog/about',
+    '/mindmaps',
+    '/showcase',
+    '/products',
+    '/learn',
+    '/guide',
+  ].map(
     (path) => ({
       url: `${base}${path}`,
       lastModified: new Date('2026-07-29'),

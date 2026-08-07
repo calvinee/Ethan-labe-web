@@ -100,7 +100,12 @@ export function SiteShell({
       <div className="signal-line" />
       <header className={`site-header ${magazineMode ? 'magazine-shell-header' : ''}`}>
         <div className={`header-inner ${magazineMode ? 'magazine-shell-inner' : ''}`}>
-          <Link href="/" className="brand" aria-label="时工的半导体实验室首页">
+          {magazineMode && (
+            <Link href="/" className="magazine-main-mark" aria-label="返回时工的半导体实验室">
+              <BrandMark variant="main" />
+            </Link>
+          )}
+          <Link href={magazineMode ? '/blog' : '/'} className="brand" aria-label={magazineMode ? '时工工程杂志首页' : '时工的半导体实验室首页'}>
             <BrandMark variant={magazineMode ? 'journal' : 'main'} />
             <span className="brand-copy">
               <strong>{magazineMode ? '时工工程杂志' : '时工的半导体实验室'}</strong>
@@ -146,7 +151,7 @@ export function SiteShell({
       {mobileOpen && (
         <div className="mobile-panel" role="dialog" aria-modal="true" aria-label="移动端导航">
           <div className="mobile-panel-head">
-            <Link href="/" className="brand">
+            <Link href={magazineMode ? '/blog' : '/'} className="brand">
               <BrandMark variant={magazineMode ? 'journal' : 'main'} />
               <span className="brand-copy">
                 <strong>{magazineMode ? '时工工程杂志' : '时工的半导体实验室'}</strong>
@@ -249,38 +254,58 @@ export function SiteShell({
 
       <main className="site-main">{children}</main>
 
-      <footer className={`site-footer ${magazineMode ? 'magazine-shell-footer' : ''}`}>
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <BrandMark />
-            <div>
-              <strong>时工的半导体实验室</strong>
-              <p>从一个工程问题，到一件真正可交付的产品。</p>
+      {magazineMode ? (
+        <footer className="magazine-journal-footer">
+          <div className="magazine-journal-footer-main">
+            <Link href="/blog" className="magazine-journal-footer-brand">
+              <BrandMark variant="journal" />
+              <span><strong>时工工程杂志</strong><small>SHI LAB JOURNAL</small></span>
+            </Link>
+            <p>记录真实项目、工程判断与可验证的交付方法。</p>
+            <nav aria-label="工程杂志页脚导航">
+              <Link href="/blog">Home</Link>
+              <Link href="/blog/notes">Notes</Link>
+              <Link href="/blog/archive">Archive</Link>
+              <Link href="/blog/about">About</Link>
+            </nav>
+          </div>
+          <div className="magazine-journal-footer-bottom">
+            <span>© 2026 SHI LAB JOURNAL</span>
+            <Link href="/">返回半导体实验室 <ArrowUpRight size={13} /></Link>
+          </div>
+        </footer>
+      ) : (
+        <footer className="site-footer">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <BrandMark />
+              <div>
+                <strong>时工的半导体实验室</strong>
+                <p>从一个工程问题，到一件真正可交付的产品。</p>
+              </div>
+            </div>
+            <div className="footer-links">
+              <div>
+                <span>探索</span>
+                <Link href="/blog">工程博客</Link>
+                <Link href="/showcase">代表项目</Link>
+                <Link href="/learn">系统学习</Link>
+              </div>
+              <div>
+                <span>产品</span>
+                <Link href="/products">产品项目</Link>
+                <Link href="/account">账号中心</Link>
+                <Link href="/guide">交付指南</Link>
+              </div>
             </div>
           </div>
-          <div className="footer-links">
-            <div>
-              <span>探索</span>
-              <Link href="/blog">工程博客</Link>
-              <Link href="/showcase">代表项目</Link>
-              <Link href="/learn">系统学习</Link>
-            </div>
-            <div>
-              <span>产品</span>
-              <Link href="/products">产品项目</Link>
-              <Link href="/account">账号中心</Link>
-              <Link href="/guide">交付指南</Link>
-            </div>
+          <div className="footer-bottom">
+            <span>© 2026 SHI&apos;S SEMICONDUCTOR LAB</span>
+            <span className="system-status"><i /> LAB SYSTEM ONLINE</span>
+            <span>MADE FOR FPGA ENGINEERS</span>
           </div>
-        </div>
-        <div className="footer-bottom">
-          <span>© 2026 SHI&apos;S SEMICONDUCTOR LAB</span>
-          <span className="system-status">
-            <i /> LAB SYSTEM ONLINE
-          </span>
-          <span>MADE FOR FPGA ENGINEERS</span>
-        </div>
-      </footer>
+        </footer>
+      )}
     </>
   );
 }

@@ -1,0 +1,31 @@
+{
+  "journalTitle": "时工工程杂志",
+  "journalSubtitle": "FPGA · AI 硬件 · 工程交付",
+  "journalDescription": "面向 FPGA 与 AI 硬件工程师的独立技术刊物，记录真实项目、工程判断和可验证的交付方法。",
+  "notesTitle": "Notes",
+  "notesDescription": "短一些的工程判断、调试观察、读书摘记与正在验证的想法。",
+  "aboutTitle": "关于时工工程杂志",
+  "aboutIntro": "这里不追逐泛泛的技术热点，只持续记录能被复现、验证和交付的工程经验。",
+  "mission": "通过项目复盘、技术长文、市场观察与短笔记，把分散的 FPGA 与 AI 硬件经验整理成同行可以直接使用的判断方法。",
+  "authorIntro": "时工长期关注量产 FPGA 系统、边缘 AI 加速、高速接口与板级交付，并在这里公开仍然有效的工程结论。",
+  "contactText": "交流技术问题、内容合作或方案需求，可通过 GitHub 与实验室取得联系。",
+  "githubUrl": "https://github.com/calvinee",
+  "credentials": [
+    {
+      "title": "量产 FPGA 系统",
+      "description": "覆盖 RTL、接口、板级验证与交付闭环。"
+    },
+    {
+      "title": "行业研发经历",
+      "description": "来自 AMD、Bosch、NovaStar 与 HeyGears 的工程实践。"
+    },
+    {
+      "title": "竞赛与奖学金",
+      "description": "国家奖学金、研电赛国家一等奖与三等奖。"
+    },
+    {
+      "title": "专利与论文",
+      "description": "2 项发明专利申请及 FPGA AI 加速研究成果。"
+    }
+  ]
+}

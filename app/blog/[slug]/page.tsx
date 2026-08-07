@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowRight, ChevronDown, Clock3 } from 'lucide-react';
@@ -68,19 +69,32 @@ export default async function BlogArticlePage({ params }: PageProps) {
           </details>
         )}
 
-        <figure className={`magazine-article-hero article-visual-${entry.visual}`}>
-          <div className="article-hero-grid" />
-          <div className="article-hero-title">
-            <span>{entry.category.toUpperCase()}</span>
-            <strong>{entry.tags.slice(0, 3).join(' × ')}</strong>
-          </div>
-          <div className="flow-node flow-requirement"><span>01</span>问题定义</div>
-          <div className="flow-node flow-rtl"><span>02</span>架构选择</div>
-          <div className="flow-node flow-verify"><span>03</span>验证证据</div>
-          <div className="flow-node flow-release"><span>04</span>工程交付</div>
-          <i className="flow-line line-one" />
-          <i className="flow-line line-two" />
-          <i className="flow-line line-three" />
+        <figure className={`magazine-article-hero article-visual-${entry.visual} ${entry.coverImage ? 'has-cover' : ''}`}>
+          {entry.coverImage ? (
+            <Image
+              src={entry.coverImage}
+              alt={entry.coverAlt || entry.title}
+              fill
+              priority
+              sizes="(max-width: 860px) 100vw, 820px"
+              className="magazine-cover-image"
+            />
+          ) : (
+            <>
+              <div className="article-hero-grid" />
+              <div className="article-hero-title">
+                <span>{entry.category.toUpperCase()}</span>
+                <strong>{entry.tags.slice(0, 3).join(' × ')}</strong>
+              </div>
+              <div className="flow-node flow-requirement"><span>01</span>问题定义</div>
+              <div className="flow-node flow-rtl"><span>02</span>架构选择</div>
+              <div className="flow-node flow-verify"><span>03</span>验证证据</div>
+              <div className="flow-node flow-release"><span>04</span>工程交付</div>
+              <i className="flow-line line-one" />
+              <i className="flow-line line-two" />
+              <i className="flow-line line-three" />
+            </>
+          )}
           <figcaption>SHI LAB · {entry.category} ENGINEERING NOTE</figcaption>
         </figure>
 
@@ -124,9 +138,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const page = getArticlePage(slug);
   if (!page) notFound();
+  const entry = getBlogEntries().find((post) => post.slug === normalizeContentSlug(slug));
   return {
     title: page.data.title,
     description: page.data.description,
+    openGraph: entry?.coverImage ? { images: [entry.coverImage] } : undefined,
   };
 }
 

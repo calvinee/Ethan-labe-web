@@ -15,7 +15,7 @@ export function MindMapDetail({
     <div className="mindmap-detail-page">
       <article>
         <header className="mindmap-detail-header">
-          <Link href="/blog#mindmaps"><ArrowLeft size={16} /> 返回思维导图专栏</Link>
+          <Link href="/mindmaps"><ArrowLeft size={16} /> 返回思维导图</Link>
           <p className="magazine-category">MIND MAP · {entry.category}</p>
           <h1>{entry.title}</h1>
           <p>{entry.description}</p>
@@ -43,7 +43,7 @@ export function MindMapDetail({
         <div className="article-prose mdx-article-body mindmap-prose"><Body /></div>
 
         <footer className="mindmap-detail-footer">
-          <Link href="/blog#mindmaps"><ArrowLeft size={16} /> 返回专栏</Link>
+          <Link href="/mindmaps"><ArrowLeft size={16} /> 返回导图索引</Link>
           <Link href="/learn">进入系统学习 <ArrowRight size={16} /></Link>
         </footer>
       </article>
